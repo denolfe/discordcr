@@ -133,13 +133,15 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#modify-channel)
     def modify_channel(channel_id : UInt64, name : String?, position : UInt32?,
-                       topic : String?, bitrate : UInt32?, user_limit : UInt32?)
+                       topic : String?, bitrate : UInt32?, user_limit : UInt32?,
+                       nsfw : Bool?)
       json = {
         name:       name,
         position:   position,
         topic:      topic,
         bitrate:    bitrate,
         user_limit: user_limit,
+        nsfw:       nsfw,
       }.to_json
 
       response = request(
@@ -641,12 +643,13 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-channel)
     def create_guild_channel(guild_id : UInt64, name : String, type : UInt8,
-                             bitrate : UInt32?, user_limit : UInt32?)
+                             bitrate : UInt32?, user_limit : UInt32?, nsfw : Bool?)
       json = {
         name:       name,
         type:       type,
         bitrate:    bitrate,
         user_limit: user_limit,
+        nsfw:       nsfw,
       }.to_json
 
       response = request(

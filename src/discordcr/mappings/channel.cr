@@ -15,7 +15,8 @@ module Discord
       mention_roles: {type: Array(UInt64), converter: SnowflakeArrayConverter},
       attachments: Array(Attachment),
       embeds: Array(Embed),
-      pinned: {type: Bool, nilable: true}
+      pinned: {type: Bool, nilable: true},
+      nsfw: Bool
     )
   end
 
