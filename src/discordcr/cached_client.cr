@@ -30,6 +30,9 @@ module Discord
           end
         end
 
+        # TODO: In the other handlers, I check for a cache first before iterating.
+        # However, here, I opt to always iterate (once) over both. Maybe I should do otherwise.
+        # It's extremely likely someone at *least* has a guild_member cache.
         payload.members.each do |member|
           if cache = cache_set.member
             cache.cache({payload.id, member.id}, member)
@@ -47,6 +50,7 @@ module Discord
         end
 
         # TODO: Emoji
+        # TODO: Presence
       end
 
       on_guild_update do |payload|
