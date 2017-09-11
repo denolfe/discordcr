@@ -12,6 +12,105 @@ module Discord
                    properties : Gateway::IdentifyProperties = DEFAULT_PROPERTIES)
       super(token, client_id, shard, large_threshold, compress, properties)
       @cache_set = Cache::CacheSet.new(self)
+      init_handlers
+    end
+
+    # Registers event handlers on this client to maintain cached data
+    private def init_handlers
+      on_guild_create do |payload|
+        if cache = cache_set.guild
+          guild = Discord::Guild.new(payload)
+          cache.cache(guild)
+        end
+
+        if cache = cache_set.channel
+          payload.channels.each do |channel|
+            channel.guild_id = payload.id
+            cache.cache(channel)
+          end
+        end
+
+        payload.members.each do |member|
+          if cache = cache_set.member
+            cache.cache({payload.id, member.id}, member)
+          end
+
+          if user_cache = cache_set.user
+            user_cache.cache(member.user)
+          end
+        end
+
+        if cache = cache_set.role
+          payload.roles.each do |role|
+            cache.cache({payload.id, role.id}, role)
+          end
+        end
+
+        # TODO: Emoji
+      end
+
+      on_guild_update do |payload|
+        if cache = cache_set.guild
+          cache.cache(payload)
+        end
+      end
+
+      on_guild_delete do |payload|
+        if cache = cache_set.guild
+          cache.remove(payload.id)
+        end
+      end
+
+      on_guild_member_add do |payload|
+        if cache = cache_set.guild_member
+          member = Discord::GuildMember.new(payload)
+          cache.cache({payload.id, member.id}, member)
+        end
+      end
+
+      on_guild_members_chunk do |payload|
+        if cache = cache_set.guild_member
+          payload.members.each do |member|
+            cache.cache({payload.id, member.id}, member)
+          end
+        end
+      end
+
+      on_guild_member_update do |payload|
+        if cache = cache_set.guild_member
+          if existing_member = cache.resolve?({payload.guild_id, payload.user.id})
+            updated_member = GuildMember.new(exisiting_member, payload.roles)
+            cache.cache({payload.guild_id, payload.user.id}, updated_member)
+          else
+            member = GuildMember.new(payload)
+            cache.cache({payload.guild_id, payload.user.id}, member)
+          end
+        end
+      end
+
+      on_guild_member_remove do |payload|
+        if cache = cache_set.guild_member
+          cache.remove({payload.guild_id, payload.user.id})
+        end
+      end
+
+      on_channel_create do |payload|
+      end
+
+      on_channel_update do |payload|
+      end
+
+      on_channel_delete do |payload|
+      end
+
+      on_message_create do |payload|
+      end
+
+      on_message_update do |payload|
+      end
+
+      on_message_delete do |payload|
+      end
     end
 
     macro cached_route(method, key_type, resource_type)
