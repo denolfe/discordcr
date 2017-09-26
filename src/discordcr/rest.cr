@@ -692,18 +692,14 @@ module Discord
       )
     end
 
-    # Modifies a guild channel's position. Requires the "Manage Channels"
+    # Modifies multiple guild channel positions. Requires the "Manage Channels"
     # permission.
     #
-    # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel)
-    def modify_guild_channel(guild_id : UInt64, channel_id : UInt64,
-                             position : UInt64)
-      json = {
-        id:       channel_id,
-        position: position,
-      }.to_json
+    # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel-positions)
+    def modify_guild_channel_positions(guild_id : UInt64, positions : Array(ModifyGuildChannelPositionPayload))
+      json = positions.to_json
 
-      response = request(
+      request(
         :guilds_gid_channels,
         guild_id,
         "PATCH",
@@ -711,8 +707,25 @@ module Discord
         HTTP::Headers{"Content-Type" => "application/json"},
         json
       )
+    end
 
-      Channel.from_json(response.body)
+    # Modifies multiple guild role positions. Requires the "Manage Roles"
+    # permission.
+    #
+    # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions)
+    def modify_guild_role_positions(guild_id : UInt64, positions : Array(ModifyGuildRolePositionPayload))
+      json = positions.to_json
+
+      response = request(
+        :guilds_gid_roles,
+        guild_id,
+        "PATCH",
+        "/guilds/#{guild_id}/roles",
+        HTTP::Headers{"Content-Type" => "application/json"},
+        json
+      )
+
+      Array(Role).from_json(response.body)
     end
 
     # Gets a specific member by both IDs.

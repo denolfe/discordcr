@@ -32,6 +32,7 @@ module Discord
       id: {type: UInt64, converter: SnowflakeConverter},
       type: UInt8,
       guild_id: {type: UInt64?, converter: MaybeSnowflakeConverter},
+      parent_id: {type: UInt64?, converter: MaybeSnowflakeConverter},
       name: String?,
       is_private: Bool?,
       permission_overwrites: Array(Overwrite)?,

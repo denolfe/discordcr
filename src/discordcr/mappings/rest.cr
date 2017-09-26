@@ -22,5 +22,23 @@ module Discord
         code: String
       )
     end
+
+    # A payload for modifying guild channel positions
+    struct ModifyGuildChannelPositionPayload
+      JSON.mapping(
+        id: UInt64,
+        position: Int32,
+        parent_id: UInt64?,
+        lock_permissions: Bool?
+      )
+    end
+
+    # A payload for modifying guild role positions
+    struct ModifyGuildRolePositionPayload
+      JSON.mapping(
+        id: UInt64,
+        position: Int32
+      )
+    end
   end
 end
