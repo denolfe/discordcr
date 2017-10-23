@@ -1,4 +1,5 @@
 require "http"
+require "zlib"
 
 module Discord
   # Internal wrapper around HTTP::WebSocket to decode the Discord-specific
@@ -19,6 +20,46 @@ module Discord
         port: @port,
         tls: @tls
       )
+
+      @buffer = IO::Memory.new
+    end
+
+    ZLIB_SUFFIX = Bytes[0, 0, 255, 255]
+
+    def on_binary(&handler : Packet ->)
+      @websocket.on_binary do |bytes|
+        LOGGER.info("Hexdump:")
+        hexdump(bytes)
+
+        LOGGER.info("Writing to buffer..")
+        # Always read the incoming bytes into the buffer
+        @buffer.write(bytes)
+
+        # Pick out the suffix of the raw zlib bytes
+        suffix = bytes[bytes.size - 4, 4]
+        LOGGER.info("Suffix: #{suffix} (end? #{suffix == ZLIB_SUFFIX})")
+
+        # If we reached the end of a message, build a packet and return it
+        # to the handler.
+        if suffix == ZLIB_SUFFIX
+          LOGGER.info("End reached, inflating..")
+          @buffer.rewind
+
+          LOGGER.info("Making new reader..")
+          @reader = Zlib::Reader.new(@buffer)
+          LOGGER.info("Reading..")
+          LOGGER.info @reader.try &.gets_to_end
+
+          @buffer.flush
+        end
+
+        LOGGER.info("Done..!")
+      end
+    end
+
+    private def hexdump(bytes)
+      io = IO::Hexdump.new(IO::Memory.new(bytes), output: STDERR, read: true)
+      io.gets_to_end
     end
 
     def on_message(&handler : Packet ->)

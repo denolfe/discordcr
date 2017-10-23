@@ -126,11 +126,12 @@ module Discord
       url = URI.parse(get_gateway.url)
       websocket = Discord::WebSocket.new(
         host: url.host.not_nil!,
-        path: "#{url.path}/?encoding=json&v=6",
+        path: "#{url.path}/?encoding=json&v=6&compress=zlib-stream",
         port: 443,
         tls: true
       )
 
+      websocket.on_binary(&->on_message(Discord::WebSocket::Packet))
       websocket.on_message(&->on_message(Discord::WebSocket::Packet))
       websocket.on_close(&->on_close(String))
 
