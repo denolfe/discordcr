@@ -3,7 +3,7 @@ script:
   - crystal spec
   - crystal tool format --check
   - find examples -name "*.cr" | xargs -L 1 crystal build --no-codegen
-  - bash ./deploy.sh
+  - bash -x ./deploy.sh
 env:
   global:
   - ENCRYPTION_LABEL: "5efb28cd0fc1"
