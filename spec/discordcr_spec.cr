@@ -27,6 +27,16 @@ describe Discord do
     end
   end
 
+  describe Discord::DATE_FORMAT do
+    it "parses a time with floating point accuracy" do
+      Discord::DATE_FORMAT.parse "2017-11-16T13:09:18.291000+00:00"
+    end
+
+    it "parses a time without floating point accuracy" do
+      Discord::DATE_FORMAT.parse "2017-11-15T02:23:35+00:00"
+    end
+  end
+
   describe Discord::SnowflakeConverter do
     it "converts a string to u64" do
       json = %({"data":"10000000000"})

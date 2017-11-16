@@ -2,7 +2,7 @@ require "json"
 require "time/format"
 
 module Discord
-  DATE_FORMAT = Time::Format.new("%FT%T.%L%:z")
+  DATE_FORMAT = Time::Format::ISO_8601_DATE_TIME
 
   # :nodoc:
   module EmbedTimestampConverter
