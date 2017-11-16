@@ -6,5 +6,5 @@ script:
   - bash ./deploy.sh
 env:
   global:
-  - ENCRYPTION_LABEL: "65183d8b3ae9"
-  - COMMIT_AUTHOR_EMAIL: "blactbt@live.de"
+  - ENCRYPTION_LABEL: "5efb28cd0fc1"
+  - COMMIT_AUTHOR_EMAIL: "zachnowicki@gmail.com"
