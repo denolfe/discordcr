@@ -858,7 +858,7 @@ module Discord
         guild_id,
         "PUT",
         "/guilds/#{guild_id}/members/#{user_id}",
-        HTTP::Headers.new,
+        HTTP::Headers{"Content-Type" => "application/json"},
         json
       )
 
