@@ -1,71 +1,20 @@
 # Utility module for parsing mentions out of Discord messages
 module Discord::Mention
-  # A hash map of regex describing how mentions are parsed by type
-  MENTION_REGEX = {
-    User     => /<@!?(?<id>\d+)>/,
-    Role     => /<@&(?<id>\d+)>/,
-    Channel  => /<#(?<id>\d+)>/,
-    Emoji    => /<(?<animated>a)?:(?<name>\w+):(?<id>\d+)>/,
-    Everyone => /@everyone/,
-    Here     => /@here/,
-  }
+  record User, position : Int32, size : Int32, id : UInt64
 
-  module SnowflakeMention
-    getter size : Int32
-    getter position : Int32
-    getter id : UInt64
+  record Role, position : Int32, size : Int32, id : UInt64
 
-    def initialize(match : Regex::MatchData)
-      @size = match.size
-      @position = match.begin.not_nil!
-      @id = match["id"].to_u64
-    end
-  end
+  record Channel, position : Int32, size : Int32, id : UInt64
 
-  struct User
-    include SnowflakeMention
-  end
+  record Emoji, position : Int32, size : Int32, animated : Bool, name : String, id : UInt64
 
-  struct Role
-    include SnowflakeMention
-  end
-
-  struct Channel
-    include SnowflakeMention
-  end
-
-  struct Emoji
-    include SnowflakeMention
-
-    getter name : String
-    getter animated : Bool
-
-    def initialize(match : Regex::MatchData)
-      super
-      @name = match["name"]
-      @animated = !match["animated"]?.nil?
-    end
-  end
-
-  module PresenceMention
-    getter position : Int32
-
-    def initialize(match : Regex::MatchData)
-      @position = match.begin.not_nil!
-    end
-  end
-
-  struct Everyone
-    include PresenceMention
-
+  record Everyone, position : Int32 do
     def size
       9
     end
   end
 
-  struct Here
-    include PresenceMention
-
+  record Here, position : Int32 do
     def size
       5
     end
