@@ -24,13 +24,6 @@ module Discord::Mention
 
   # Returns an array of mentions found in a string
   def self.parse(string : String)
-    results = [] of MentionType
-    MENTION_REGEX.each do |type, regexp|
-      string.scan(regexp).each do |match|
-        results << type.new(match)
-      end
-    end
-    results
   end
 
   # Parses a string for mentions, yielding each one found
@@ -49,10 +42,5 @@ module Discord::Mention
   # end
   # ```
   def self.parse(string : String, &block : MentionType ->)
-    MENTION_REGEX.each do |type, regexp|
-      string.scan(regexp).each do |match|
-        yield type.new(match)
-      end
-    end
   end
 end
