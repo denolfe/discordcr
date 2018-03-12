@@ -1,38 +1,31 @@
 require "./spec_helper"
 
 describe Discord::Mention do
-  string = "foo bar <@123> <@!123> <@&123> <#123> <:foo:123> <a:bar:123> @everyone @here"
+  string = "foo bar <@1> <@!2> <@&3> <#4> <:foo:5> <a:bar:6> @everyone @here"
+
+  mentions = [
+    Discord::Mention::User.new(8, 4, 1_u64),
+    Discord::Mention::User.new(13, 5, 2_u64),
+    Discord::Mention::Role.new(19, 5, 3_u64),
+    Discord::Mention::Channel.new(25, 4, 4_u64),
+    Discord::Mention::Emoji.new(30, 8, false, "foo", 5_u64),
+    Discord::Mention::Emoji.new(39, 9, true, "bar", 6_u64),
+    Discord::Mention::Everyone.new(49),
+    Discord::Mention::Here.new(59),
+  ]
 
   describe ".parse" do
     it "parses mentions" do
       parsed = Discord::Mention.parse(string)
-
-      parsed.size.should eq 8
-      parsed.each do |mention|
-        case mention
-        when Discord::Mention::SnowflakeMention
-          mention.id.should eq 123
-        when Discord::Mention::Emoji
-          mention.id.should eq 123
-
-          if mention.name == "foo"
-            mention.animated.should eq false
-          elsif mention.name == "bar"
-            mention.animated.should eq true
-          end
-        end
-      end
-
-      parsed[6].should be_a Discord::Mention::Everyone
-      parsed[7].should be_a Discord::Mention::Here
+      parsed.should eq mentions
     end
 
     it "accepts a block" do
-      total = 0
+      index = 0
       Discord::Mention.parse(string) do |mention|
-        total += 1
+        mention.should eq mentions[index]
+        index += 1
       end
-      total.should eq 8
     end
   end
 end
