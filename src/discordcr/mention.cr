@@ -24,6 +24,11 @@ module Discord::Mention
 
   # Returns an array of mentions found in a string
   def self.parse(string : String)
+    array = [] of MentionType
+    Mention.parse(string) do |mention|
+      array << mention
+    end
+    array
   end
 
   # Parses a string for mentions, yielding each one found
@@ -42,5 +47,51 @@ module Discord::Mention
   # end
   # ```
   def self.parse(string : String, &block : MentionType ->)
+    io = IO::Memory.new(string)
+
+    io.each_char do |char|
+      position = io.pos - 1
+
+      case char
+      when '<'
+        # User, Role, Emoji
+        raw = String.build do |str|
+          while char = io.read_char
+            break if char == ' ' || char == '>'
+            str << char
+          end
+        end
+
+        size = io.pos - position
+
+        pp raw
+        case raw[0]
+        when '@'
+          type = raw[1] == '&' ? Role : User
+          if snowflake = raw[1..-1].lstrip("&!").to_u64?
+            yield type.new(position, size, snowflake)
+          end
+        when '#'
+          if snowflake = raw[1..-1].to_u64?
+            yield Channel.new(position, size, snowflake)
+          end
+        end
+      when '@'
+        # Everyone, Here
+        raw = String.build do |str|
+          while char = io.read_char
+            break if char == ' ' || char == '>'
+            str << char
+          end
+        end
+
+        pp raw
+        if raw == "everyone"
+          yield Everyone.new(position)
+        elsif raw == "here"
+          yield Here.new(position)
+        end
+      end
+    end
   end
 end
