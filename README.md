@@ -1,4 +1,4 @@
-[![docs](https://img.shields.io/badge/docs-latest-green.svg?style=flat-square)](https://meew0.github.io/discordcr/doc/v0.1.0/)
+[![docs](https://img.shields.io/badge/docs-latest-green.svg?style=flat-square)](https://z64.github.io/discordcr)
 
 # discordcr
 
@@ -29,13 +29,13 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   discordcr:
-    github: meew0/discordcr
+    github: z64/discordcr
 ```
 
 ## Usage
 
 An example bot can be found
-[here](https://github.com/meew0/discordcr/blob/master/examples/ping.cr). More
+[here](https://github.com/z64/discordcr/blob/master/examples/ping.cr). More
 examples will come in the future.
 
 A short overview of library structure: the `Client` class includes the `REST`
@@ -72,15 +72,11 @@ puts user.username
 ```
 
 Apart from this, API documentation is also available, at
-https://meew0.github.io/discordcr/doc/v0.1.0/.
+https://z64.github.io/discordcr.
 
 ## Contributing
 
-1. Fork it (https://github.com/meew0/discordcr/fork)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+See [CONTRIBUTING.md](https://github.com/z64/discordcr/blob/master/CONTRIBUTING.md).
 
 ## Contributors
 
