@@ -1,4 +1,5 @@
 require "http"
+require "zlib"
 
 module Discord
   # Internal wrapper around HTTP::WebSocket to decode the Discord-specific
@@ -41,6 +42,17 @@ module Discord
       end
     end
 
+    def on_binary(&handler : Packet ->)
+      @websocket.on_binary do |bytes|
+        io = IO::Memory.new(bytes)
+        Zlib::Reader.open(io, sync_close: true) do |reader|
+          payload = parse_message(reader)
+          @logger.debug "[WS IN] (compressed, #{bytes.size}) #{payload.data.to_s}" if @logger.debug?
+          handler.call(payload)
+        end
+      end
+    end
+
     def on_close(&handler : String ->)
       @websocket.on_close(&handler)
     end
@@ -52,7 +64,7 @@ module Discord
       @websocket.send(message)
     end
 
-    private def parse_message(message : String)
+    private def parse_message(message : String | IO)
       parser = JSON::PullParser.new(message)
 
       opcode = nil
