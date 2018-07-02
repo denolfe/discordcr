@@ -110,5 +110,15 @@ describe Discord do
         end
       end
     end
+
+    it "#to_json" do
+      packet = Discord::WebSocket::Packet.new(
+        1,
+        2,
+        IO::Memory.new(%({"foo":"bar"})),
+        "baz")
+      expected = %({"op":1,"s":2,"d":{"foo":"bar"},"t":"baz"})
+      packet.to_json.should eq expected
+    end
   end
 end

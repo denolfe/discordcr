@@ -22,6 +22,16 @@ module Discord
         event_type.inspect(io)
         io << ')'
       end
+
+      def to_json(builder : JSON::Builder)
+        builder.object do
+          builder.field("op", opcode)
+          builder.field("s", sequence)
+          builder.string("d")
+          builder.raw(data.to_s)
+          builder.field("t", event_type)
+        end
+      end
     end
 
     def initialize(@host : String, @path : String, @port : Int32, @tls : Bool, @logger : Logger)
