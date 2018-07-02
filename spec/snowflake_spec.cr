@@ -33,6 +33,13 @@ describe Discord::Snowflake do
     end
   end
 
+  it "compares with uint64" do
+    snowflake = Discord::Snowflake.new(1)
+    (snowflake == 1_u64).should be_true
+    (snowflake > 0_u64).should be_true
+    (snowflake < 2_u64).should be_true
+  end
+
   describe "#creation_time" do
     it "returns the time the snowflake was created" do
       time = Time.new(2018, 4, 18)
