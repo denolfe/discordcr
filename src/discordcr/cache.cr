@@ -19,7 +19,7 @@ module Discord
 
     abstract def remove(key : K)
 
-    abstract def each(&block : K, V ->)
+    abstract def each(&block : Tuple(K, V) ->)
   end
 
   class MemoryCache(K, V) < Cache(K, V)
@@ -29,7 +29,7 @@ module Discord
 
     def each
       @cache.each do |key, value|
-        yield(key, value)
+        yield({key, value})
       end
     end
 
@@ -59,7 +59,7 @@ module Discord
       nil
     end
 
-    def each(&block : K, V ->)
+    def each(&block : Tuple(K, V) ->)
       nil
     end
   end
