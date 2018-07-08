@@ -21,8 +21,6 @@ module Discord
   end
 
   class MemoryCache(K, V) < Cache(K, V)
-    include Enumerable(Tuple(K, V))
-
     def initialize
       @cache = {} of K => V
     end
