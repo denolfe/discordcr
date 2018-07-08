@@ -1,5 +1,7 @@
 module Discord
   abstract class Cache(K, V)
+    include Enumerable({K, V})
+
     class Error < Exception
     end
 
@@ -17,7 +19,7 @@ module Discord
 
     abstract def remove(key : K)
 
-    abstract def each(&block : Tuple(K, V) ->)
+    abstract def each(&block : K, V ->)
   end
 
   class MemoryCache(K, V) < Cache(K, V)
@@ -27,7 +29,7 @@ module Discord
 
     def each
       @cache.each do |key, value|
-        yield({key, value})
+        yield(key, value)
       end
     end
 
@@ -57,7 +59,7 @@ module Discord
       nil
     end
 
-    def each(&block : Tuple(K, V) ->)
+    def each(&block : K, V ->)
       nil
     end
   end
