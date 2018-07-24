@@ -12,8 +12,17 @@ module Discord::CDN
     PNG
     GIF
 
+    def to_s
+      case self
+      when PNG
+        "png"
+      when GIF
+        "gif"
+      end
+    end
+
     def to_s(io : IO)
-      io << to_s.downcase
+      io << to_s
     end
   end
 
@@ -22,8 +31,19 @@ module Discord::CDN
     JPEG
     WebP
 
+    def to_s
+      case self
+      when PNG
+        "png"
+      when JPEG
+        "jpeg"
+      when WebP
+        "webp"
+      end
+    end
+
     def to_s(io : IO)
-      io << to_s.downcase
+      io << to_s
     end
   end
 
@@ -32,8 +52,19 @@ module Discord::CDN
     JPEG
     WebP
 
+    def to_s
+      case self
+      when PNG
+        "png"
+      when JPEG
+        "jpeg"
+      when WebP
+        "webp"
+      end
+    end
+
     def to_s(io : IO)
-      io << to_s.downcase
+      io << to_s
     end
   end
 
@@ -43,8 +74,21 @@ module Discord::CDN
     WebP
     GIF
 
+    def to_s
+      case self
+      when PNG
+        "png"
+      when JPEG
+        "jpeg"
+      when WebP
+        "webp"
+      when GIF
+        "gif"
+      end
+    end
+
     def to_s(io : IO)
-      io << to_s.downcase
+      io << to_s
     end
   end
 
@@ -54,8 +98,21 @@ module Discord::CDN
     WebP
     GIF
 
+    def to_s
+      case self
+      when PNG
+        "png"
+      when JPEG
+        "jpeg"
+      when WebP
+        "webp"
+      when GIF
+        "gif"
+      end
+    end
+
     def to_s(io : IO)
-      io << to_s.downcase
+      io << to_s
     end
   end
 
