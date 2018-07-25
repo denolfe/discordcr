@@ -89,24 +89,29 @@ describe Discord::User do
 
   describe "#avatar_url" do
     it "returns avatar URL with the given format and size" do
-      user_with_avatar.avatar_url(:png, 16).should eq Discord::CDN.user_avatar(1, "hash", :png, 16)
+      user = user_with_avatar
+      user.avatar_url(:png, 16).should eq Discord::CDN.user_avatar(user.id, "hash", :png, 16)
     end
 
     it "returns default avatar URL with the given format and size" do
-      user_with_default_avatar.avatar_url(:png, 16).should eq Discord::CDN.default_user_avatar("0007")
+      user = user_with_default_avatar
+      user.avatar_url(:png, 16).should eq Discord::CDN.default_user_avatar(user.discriminator)
     end
 
     context "without format" do
       it "returns default avatar URL" do
-        user_with_default_avatar.avatar_url.should eq Discord::CDN.default_user_avatar("0007")
+        user = user_with_default_avatar
+        user.avatar_url.should eq Discord::CDN.default_user_avatar(user.discriminator)
       end
 
       it "returns avatar URL" do
-        user_with_avatar.avatar_url.should eq Discord::CDN.user_avatar(1, "hash")
+        user = user_with_avatar
+        user.avatar_url.should eq Discord::CDN.user_avatar(user.id, user.avatar.not_nil!)
       end
 
       it "returns animated avatar URL" do
-        user_with_animated_avatar.avatar_url.should eq Discord::CDN.user_avatar(1, "a_hash")
+        user = user_with_animated_avatar
+        user.avatar_url.should eq Discord::CDN.user_avatar(user.id, user.avatar.not_nil!)
       end
     end
   end
