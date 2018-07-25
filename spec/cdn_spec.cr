@@ -111,3 +111,32 @@ describe Discord::User do
     end
   end
 end
+
+describe Discord::Guild do
+  guild_with_icon_and_splash = Discord::Guild.from_json <<-JSON
+  {
+    "id": "1",
+    "name": "name",
+    "icon": "hash",
+    "splash": "hash",
+    "owner_id": "2",
+    "region": "region",
+    "verification_level": 1,
+    "roles": [],
+    "emojis": [],
+    "features": [],
+    "default_message_notifications": 1,
+    "explicit_content_filter": 1
+  }
+  JSON
+
+  it "#icon_url" do
+    guild = guild_with_icon_and_splash
+    guild.icon_url(:png, 16).should eq Discord::CDN.guild_icon(guild.id, guild.icon.not_nil!, :png, 16)
+  end
+
+  it "#splash_url" do
+    guild = guild_with_icon_and_splash
+    guild.splash_url(:png, 16).should eq Discord::CDN.guild_splash(guild.id, guild.splash.not_nil!, :png, 16)
+  end
+end
