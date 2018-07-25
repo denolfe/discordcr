@@ -22,6 +22,23 @@ module Discord
       mfa_enabled: Bool?,
       verified: Bool?
     )
+
+    def avatar_url(size : Int32 = 128)
+      if avatar = @avatar
+        CDN.user_avatar(id, avatar, size)
+      else
+        CDN.default_user_avatar(discriminator)
+      end
+    end
+
+    def avatar_url(format : CDN::UserAvatarFormat = CDN::UserAvatarFormat::WebP,
+                   size : Int32 = 128)
+      if avatar = @avatar
+        CDN.user_avatar(id, avatar, format, size)
+      else
+        CDN.default_user_avatar(discriminator)
+      end
+    end
   end
 
   struct PartialUser

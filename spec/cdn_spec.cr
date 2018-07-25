@@ -58,3 +58,56 @@ describe Discord::CDN do
     end
   end
 end
+
+describe Discord::User do
+  user_with_default_avatar = Discord::User.from_json <<-JSON
+  {
+    "id": "1",
+    "username": "foo",
+    "avatar": null,
+    "discriminator": "0007"
+  }
+  JSON
+
+  user_with_avatar = Discord::User.from_json <<-JSON
+  {
+    "id": "1",
+    "username": "foo",
+    "avatar": "hash",
+    "discriminator": "0007"
+  }
+  JSON
+
+  user_with_animated_avatar = Discord::User.from_json <<-JSON
+  {
+    "id": "1",
+    "username": "foo",
+    "avatar": "a_hash",
+    "discriminator": "0007"
+  }
+  JSON
+
+  describe "#avatar_url" do
+    it "returns avatar URL with the given format and size" do
+      user_with_avatar.avatar_url(:png, 16).should eq Discord::CDN.user_avatar(1, "hash", :png, 16)
+    end
+
+    it "returns default avatar URL with the given format and size" do
+      user_with_default_avatar.avatar_url(:png, 16).should eq Discord::CDN.default_user_avatar("0007")
+    end
+
+    context "without format" do
+      it "returns default avatar URL" do
+        user_with_default_avatar.avatar_url.should eq Discord::CDN.default_user_avatar("0007")
+      end
+
+      it "returns avatar URL" do
+        user_with_avatar.avatar_url.should eq Discord::CDN.user_avatar(1, "hash")
+      end
+
+      it "returns animated avatar URL" do
+        user_with_animated_avatar.avatar_url.should eq Discord::CDN.user_avatar(1, "a_hash")
+      end
+    end
+  end
+end
