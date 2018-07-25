@@ -154,6 +154,19 @@ module Discord
       managed: Bool,
       animated: Bool
     )
+
+    def image_url(size : Int32 = 128)
+      if animated
+        image_url(:gif, size)
+      else
+        image_url(:png, size)
+      end
+    end
+
+    def image_url(format : CDN::CustomEmojiFormat,
+                  size : Int32 = 128)
+      CDN.custom_emoji(id, format, size)
+    end
   end
 
   struct Role

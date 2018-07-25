@@ -145,3 +145,40 @@ describe Discord::Guild do
     guild.splash_url(:png, 16).should eq Discord::CDN.guild_splash(guild.id, guild.splash.not_nil!, :png, 16)
   end
 end
+
+describe Discord::Emoji do
+  emoji = Discord::Emoji.from_json <<-JSON
+  {
+    "id": "1",
+    "name": "name",
+    "roles": [],
+    "require_colons": true,
+    "managed": false,
+    "animated": false
+  }
+  JSON
+
+  animated_emoji = Discord::Emoji.from_json <<-JSON
+  {
+    "id": "1",
+    "name": "name",
+    "roles": [],
+    "require_colons": true,
+    "managed": false,
+    "animated": true
+  }
+  JSON
+
+  describe "#image_url" do
+    it "returns an image URL with given format and size" do
+      emoji.image_url(:png, 16).should eq Discord::CDN.custom_emoji(emoji.id, :png, 16)
+    end
+
+    context "without format" do
+      it "returns a webp or gif if animated" do
+        emoji.image_url.should eq Discord::CDN.custom_emoji(emoji.id, :png, 128)
+        animated_emoji.image_url.should eq Discord::CDN.custom_emoji(animated_emoji.id, :gif, 128)
+      end
+    end
+  end
+end
