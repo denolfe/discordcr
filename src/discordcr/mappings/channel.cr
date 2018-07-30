@@ -148,13 +148,44 @@ module Discord
   end
 
   struct ReactionEmoji
-    JSON.mapping(
-      id: Snowflake?,
-      name: String
-    )
+    include JSON::Serializable
+
+    getter id : Snowflake?
+
+    getter name : String
   end
 
   struct Embed
+    include JSON::Serializable
+
+    getter title : String?
+
+    getter type : String
+
+    getter description : String?
+
+    getter url : String?
+
+    @[JSON::Field(converter: Discord::MaybeTimestampConverter)]
+    getter timestamp : Time?
+
+    @[JSON::Field(key: "color")]
+    getter colour : UInt32
+
+    getter footer : EmbedFooter?
+
+    getter image : EmbedImage?
+
+    getter thumbnail : EmbedThumbnail?
+
+    getter video : EmbedVideo?
+
+    getter provider : EmbedProvider?
+
+    getter author : EmbedAuthor?
+
+    getter fields : Array(EmbedField)?
+
     def initialize(@title : String? = nil, @type : String = "rich",
                    @description : String? = nil, @url : String? = nil,
                    @timestamp : Time? = nil, @colour : UInt32? = nil,
@@ -162,22 +193,6 @@ module Discord
                    @thumbnail : EmbedThumbnail? = nil, @author : EmbedAuthor? = nil,
                    @fields : Array(EmbedField)? = nil)
     end
-
-    JSON.mapping(
-      title: String?,
-      type: String,
-      description: String?,
-      url: String?,
-      timestamp: {type: Time?, converter: MaybeTimestampConverter},
-      colour: {type: UInt32?, key: "color"},
-      footer: EmbedFooter?,
-      image: EmbedImage?,
-      thumbnail: EmbedThumbnail?,
-      video: EmbedVideo?,
-      provider: EmbedProvider?,
-      author: EmbedAuthor?,
-      fields: Array(EmbedField)?
-    )
 
     {% unless flag?(:correct_english) %}
       def color
