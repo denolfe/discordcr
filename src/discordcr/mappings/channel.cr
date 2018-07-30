@@ -278,14 +278,16 @@ module Discord
   end
 
   struct EmbedField
+    include JSON::Serializable
+
+    getter name : String
+
+    getter value : String
+
+    getter inline : Bool
+
     def initialize(@name : String, @value : String, @inline : Bool = false)
     end
-
-    JSON.mapping(
-      name: String,
-      value: String,
-      inline: Bool
-    )
   end
 
   struct Attachment
