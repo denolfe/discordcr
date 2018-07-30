@@ -55,10 +55,11 @@ module Discord
   end
 
   struct Activity
-    JSON.mapping(
-      type: ActivityType,
-      party_id: String?
-    )
+    include JSON::Serializable
+
+    getter type : ActivityType
+
+    getter party_id : String?
   end
 
   enum ChannelType : UInt8
