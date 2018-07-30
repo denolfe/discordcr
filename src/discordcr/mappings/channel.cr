@@ -114,12 +114,15 @@ module Discord
   end
 
   struct PrivateChannel
-    JSON.mapping(
-      id: Snowflake,
-      type: ChannelType,
-      recipients: Array(User),
-      last_message_id: Snowflake?
-    )
+    include JSON::Serializable
+
+    getter id : Snowflake
+
+    getter type : ChannelType
+
+    getter recipients : Array(User)
+
+    getter last_message_id : Snowflake?
   end
 
   struct Overwrite
