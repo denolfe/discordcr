@@ -13,23 +13,38 @@ module Discord
   end
 
   struct Message
-    JSON.mapping(
-      type: MessageType,
-      content: String,
-      id: Snowflake,
-      channel_id: Snowflake,
-      author: User,
-      timestamp: {type: Time, converter: TimestampConverter},
-      tts: Bool,
-      mention_everyone: Bool,
-      mentions: Array(User),
-      mention_roles: Array(Snowflake),
-      attachments: Array(Attachment),
-      embeds: Array(Embed),
-      pinned: Bool?,
-      reactions: Array(Reaction)?,
-      activity: Activity?
-    )
+    include JSON::Serializable
+
+    getter type : MessageType
+
+    getter content : String
+
+    getter id : Snowflake
+
+    getter channel_id : Snowflake
+
+    getter author : User
+
+    @[JSON::Field(converter: Discord::TimestampConverter)]
+    getter timestamp : Time
+
+    getter tts : Bool
+
+    getter mention_everyone : Bool
+
+    getter mentions : Array(User)
+
+    getter mention_roles : Array(Snowflake)
+
+    getter attachments : Array(Attachment)
+
+    getter embeds : Array(Embed)
+
+    getter pinned : Bool?
+
+    getter reactions : Array(Reaction)?
+
+    getter activity : Activity?
   end
 
   enum ActivityType : UInt8
