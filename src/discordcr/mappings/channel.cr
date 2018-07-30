@@ -291,14 +291,20 @@ module Discord
   end
 
   struct Attachment
-    JSON.mapping(
-      id: Snowflake,
-      filename: String,
-      size: UInt32,
-      url: String,
-      proxy_url: String,
-      height: UInt32?,
-      width: UInt32?
-    )
+    include JSON::Serializable
+
+    getter id : Snowflake
+
+    getter filename : String
+
+    getter size : UInt32
+
+    getter url : String
+
+    getter proxy_url : String
+
+    getter height : UInt32?
+
+    getter width : UInt32?
   end
 end
