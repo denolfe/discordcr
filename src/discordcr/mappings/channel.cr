@@ -76,7 +76,7 @@ module Discord
 
     getter type : ChannelType
 
-    getter guild_id : Snowflake?
+    property guild_id : Snowflake?
 
     getter name : String?
 
