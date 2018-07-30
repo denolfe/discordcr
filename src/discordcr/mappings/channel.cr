@@ -202,15 +202,18 @@ module Discord
   end
 
   struct EmbedThumbnail
+    include JSON::Serializable
+
+    getter url : String
+
+    getter proxy_url : String?
+
+    getter height : UInt32?
+
+    getter width : UInt32?
+
     def initialize(@url : String)
     end
-
-    JSON.mapping(
-      url: String,
-      proxy_url: String?,
-      height: UInt32?,
-      width: UInt32?
-    )
   end
 
   struct EmbedVideo
