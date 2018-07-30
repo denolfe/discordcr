@@ -265,14 +265,16 @@ module Discord
   end
 
   struct EmbedFooter
+    include JSON::Serializable
+
+    getter text : String?
+
+    getter icon_url : String?
+
+    getter proxy_icon_url : String?
+
     def initialize(@text : String? = nil, @icon_url : String? = nil)
     end
-
-    JSON.mapping(
-      text: String?,
-      icon_url: String?,
-      proxy_icon_url: String?
-    )
   end
 
   struct EmbedField
