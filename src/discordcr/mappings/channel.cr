@@ -138,11 +138,13 @@ module Discord
   end
 
   struct Reaction
-    JSON.mapping(
-      emoji: ReactionEmoji,
-      count: UInt32,
-      me: Bool
-    )
+    include JSON::Serializable
+
+    getter emoji : ReactionEmoji
+
+    getter count : UInt32
+
+    getter me : Bool
   end
 
   struct ReactionEmoji
