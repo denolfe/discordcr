@@ -126,12 +126,15 @@ module Discord
   end
 
   struct Overwrite
-    JSON.mapping(
-      id: Snowflake,
-      type: String,
-      allow: Permissions,
-      deny: Permissions
-    )
+    include JSON::Serializable
+
+    getter id : Snowflake
+
+    getter type : String
+
+    getter allow : Permissions
+
+    getter deny : Permissions
   end
 
   struct Reaction
