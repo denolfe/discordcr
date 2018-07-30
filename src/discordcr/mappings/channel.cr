@@ -250,15 +250,18 @@ module Discord
   end
 
   struct EmbedAuthor
+    include JSON::Serializable
+
+    getter name : String?
+
+    getter url : String?
+
+    getter icon_url : String?
+
+    getter proxy_icon_url : String?
+
     def initialize(@name : String? = nil, @url : String? = nil, @icon_url : String? = nil)
     end
-
-    JSON.mapping(
-      name: String?,
-      url: String?,
-      icon_url: String?,
-      proxy_icon_url: String?
-    )
   end
 
   struct EmbedFooter
