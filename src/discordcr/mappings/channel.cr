@@ -242,10 +242,11 @@ module Discord
   end
 
   struct EmbedProvider
-    JSON.mapping(
-      name: String,
-      url: String?
-    )
+    include JSON::Serializable
+
+    getter name : String
+
+    getter url : String?
   end
 
   struct EmbedAuthor
