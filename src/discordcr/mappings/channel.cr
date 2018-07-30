@@ -217,11 +217,13 @@ module Discord
   end
 
   struct EmbedVideo
-    JSON.mapping(
-      url: String,
-      height: UInt32,
-      width: UInt32
-    )
+    include JSON::Serializable
+
+    getter url : String
+
+    getter height : UInt32
+
+    getter width : UInt32
   end
 
   struct EmbedImage
