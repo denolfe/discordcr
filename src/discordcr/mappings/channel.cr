@@ -70,6 +70,40 @@ module Discord
   end
 
   struct Channel
+    include JSON::Serializable
+
+    getter id : Snowflake
+
+    getter type : ChannelType
+
+    getter guild_id : Snowflake?
+
+    getter name : String?
+
+    getter permission_overwrites : Array(Overwrite)?
+
+    getter topic : String?
+
+    getter last_message_id : Snowflake?
+
+    getter bitrate : UInt32?
+
+    getter user_limit : UInt32?
+
+    getter recipients : Array(User)?
+
+    getter nsfw : Bool?
+
+    getter icon : Bool?
+
+    getter owner_id : Snowflake?
+
+    getter application_id : Snowflake?
+
+    getter position : Int32?
+
+    getter parent_id : Snowflake?
+
     # :nodoc:
     def initialize(private_channel : PrivateChannel)
       @id = private_channel.id
@@ -77,25 +111,6 @@ module Discord
       @recipients = private_channel.recipients
       @last_message_id = private_channel.last_message_id
     end
-
-    JSON.mapping(
-      id: Snowflake,
-      type: ChannelType,
-      guild_id: Snowflake?,
-      name: String?,
-      permission_overwrites: Array(Overwrite)?,
-      topic: String?,
-      last_message_id: Snowflake?,
-      bitrate: UInt32?,
-      user_limit: UInt32?,
-      recipients: Array(User)?,
-      nsfw: Bool?,
-      icon: Bool?,
-      owner_id: Snowflake?,
-      application_id: Snowflake?,
-      position: Int32?,
-      parent_id: Snowflake?
-    )
   end
 
   struct PrivateChannel
