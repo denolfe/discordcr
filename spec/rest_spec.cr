@@ -1,5 +1,4 @@
 require "./spec_helper"
-require "./mock_server"
 
 describe Discord::REST do
   client = Discord::Client.new(token: "Bot token")

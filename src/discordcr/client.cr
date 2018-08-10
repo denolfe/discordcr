@@ -65,7 +65,7 @@ module Discord
     # The *properties* define what values are sent to Discord as analytics
     # properties. It's not recommended to change these from the default values,
     # but if you desire to do so, you can.
-    def initialize(@token : String, @client_id : UInt64? = nil,
+    def initialize(@token : String, @client_id : Snowflake | UInt64? = nil,
                    @shard : Gateway::ShardKey? = nil,
                    @large_threshold : Int32 = 100,
                    @compress : Bool = true,
