@@ -1,0 +1,12 @@
+{
+  "id": "1",
+  "name": "foo",
+  "bot_public": true,
+  "bot_require_code_grant": false,
+  "owner": {
+    "id": "2",
+    "username": "z64",
+    "discriminator": "1337",
+    "avatar": "a_d91d42bc7c02bfbfa195c8f66e4a9d47"
+  }
+}

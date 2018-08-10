@@ -1,0 +1,26 @@
+{
+  "id": "2",
+  "channel_id": "1",
+  "author": {
+    "id": "120571255635181568",
+    "username": "z64",
+    "discriminator": "1337",
+    "avatar": "a_d91d42bc7c02bfbfa195c8f66e4a9d47"
+  },
+  "content": "foo",
+  "timestamp": "2018-08-06T19:28:05.00+0000",
+  "edited_timestamp": null,
+  "tts": false,
+  "mention_everyone": false,
+  "mentions": [],
+  "mention_roles": [],
+  "attachments": [],
+  "embeds": [],
+  "reactions": [],
+  "nonce": null,
+  "pinned": false,
+  "webhook_id": null,
+  "type": 0,
+  "activity": null,
+  "application": null
+}
