@@ -20,7 +20,7 @@ describe Discord::MockServer do
 
     response = run_request(on: server, with: request)
     response.status_code.should eq 200
-    response.body.should eq [endpoint].to_json
+    response.body.should eq %({"GET /ping":[{"method":"GET","resource":"/ping","status_code":200,"headers":{"Content-Type":"text/plain"},"body":"pong"}]})
   end
 
   it "creates endpoints" do
@@ -44,6 +44,21 @@ describe Discord::MockServer do
 
     response_b = run_request(on: server, with: HTTP::Request.new("GET", "/ping?v=2"))
     response_b.body.should eq "bar"
+  end
+
+  it "stores endpoint responses as a stack" do
+    server.add("GET", "/stack_test", 200, {"Content-Type" => "text/plain"}, "foo")
+    server.add("GET", "/stack_test", 200, {"Content-Type" => "text/plain"}, "bar")
+
+    response = run_request(on: server, with: HTTP::Request.new("GET", "/stack_test"))
+    response.body.should eq "foo"
+
+    response = run_request(on: server, with: HTTP::Request.new("GET", "/stack_test"))
+    response.body.should eq "bar"
+
+    response = run_request(on: server, with: HTTP::Request.new("GET", "/stack_test"))
+    response.status_code.should eq 404
+    response.body.should eq "404 Not Found\n"
   end
 
   it "responds with 404 on missing route" do

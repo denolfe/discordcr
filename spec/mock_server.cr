@@ -26,7 +26,7 @@ class Discord::MockServer
     end
     @logger = Logger.new(STDOUT)
     @logger.progname = "mock server"
-    @endpoints = Hash({String, String}, Endpoint).new
+    @endpoints = Hash({String, String}, Array(Endpoint)).new
   end
 
   def run
@@ -45,15 +45,15 @@ class Discord::MockServer
     begin
       case route
       when {"GET", "/_endpoints"}
-        respond_json(@endpoints.values.to_json, 200, response)
+        respond_json(serialize_endpoints, 200, response)
         handled = true
       when {"POST", "/_endpoints"}
         endpoint = Endpoint.from_json(request.body || "")
-        @endpoints[endpoint.id] = endpoint
+        (@endpoints[endpoint.id] ||= [] of Endpoint) << endpoint
         respond_json(endpoint.to_json, 201, response)
         handled = true
       else
-        if endpoint = @endpoints[route]?
+        if endpoint = @endpoints[route]?.try &.shift?
           respond_endpoint(endpoint, response)
           handled = true
         end
@@ -73,11 +73,22 @@ class Discord::MockServer
   # :nodoc:
   def add(*args, **kwargs)
     endpoint = Endpoint.new(*args, **kwargs)
-    @endpoints[endpoint.id] = endpoint
+    (@endpoints[endpoint.id] ||= [] of Endpoint) << endpoint
   end
 
   private def log(request : HTTP::Request)
     @logger.info("[IN] #{request.method} #{request.resource}")
+  end
+
+  private def serialize_endpoints
+    JSON.build do |builder|
+      builder.object do
+        @endpoints.each do |id, endpoints|
+          builder.string("#{id[0]} #{id[1]}")
+          endpoints.to_json(builder)
+        end
+      end
+    end
   end
 
   private def respond_json(body, status_code, response)
