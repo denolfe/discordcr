@@ -12,35 +12,43 @@ describe Discord::REST do
   end
 
   {% if flag?(:mock_server) %}
+    describe "#request" do
+      context "successful request" do
+        it "returns the HTTP::Response" do
+          Discord::MockServer.prepare_endpoint("GET", "/success", 200,
+            {"Content-Type" => "text/plain"}, "OK")
+          response = client.request(:success, nil, "GET", "/success", HTTP::Headers.new, nil)
+          response.should be_a HTTP::Client::Response
+        end
+      end
+
+      context "unsuccessful request" do
+        it "raises StatusException when not application/json" do
+          Discord::MockServer.prepare_endpoint("GET", "/fail", 400,
+            {"Content-Type" => "text/plain"}, "400 Bad Request")
+          expect_raises(Discord::StatusException, "400 Bad Request") do
+            client.request(:fail, nil, "GET", "/fail", HTTP::Headers.new, nil)
+          end
+        end
+
+        it "tries to parse API error, or falls back to StatusException" do
+          Discord::MockServer.prepare_endpoint("GET", "/fail", 400,
+            {"Content-Type" => "application/json"}, %({"code": 1, "message": "test"}))
+          expect_raises(Discord::CodeException, "400 Bad Request: Code 1 - test") do
+            client.request(:fail, nil, "GET", "/fail", HTTP::Headers.new, nil)
+          end
+
+          Discord::MockServer.prepare_endpoint("GET", "/fail", 400,
+            {"Content-Type" => "application/json"}, %(invalid json))
+          expect_raises(Discord::StatusException, "400 Bad Request") do
+            client.request(:fail, nil, "GET", "/fail", HTTP::Headers.new, nil)
+          end
+        end
+      end
+    end
+
     it "#create_message" do
-      expected = Discord::Message.from_json <<-JSON
-      {
-        "id": "2",
-        "channel_id": "1",
-        "author": {
-          "id": "120571255635181568",
-          "username": "z64",
-          "discriminator": "1337",
-          "avatar": "a_d91d42bc7c02bfbfa195c8f66e4a9d47"
-        },
-        "content": "foo",
-        "timestamp": "2018-08-06T19:28:05.00+0000",
-        "edited_timestamp": null,
-        "tts": false,
-        "mention_everyone": false,
-        "mentions": [],
-        "mention_roles": [],
-        "attachments": [],
-        "embeds": [],
-        "reactions": [],
-        "nonce": null,
-        "pinned": false,
-        "webhook_id": null,
-        "type": 0,
-        "activity": null,
-        "application": null
-      }
-      JSON
+      expected = Discord::Message.from_json load_json("message")
       Discord::MockServer.prepare_endpoint("POST", "/channels/1/messages", 200,
         {"Content-Type" => "application/json"}, expected.to_json)
       client.create_message(1, "foo").should eq expected
