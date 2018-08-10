@@ -46,6 +46,27 @@ describe Discord::REST do
       end
     end
 
+    it "#get_gateway" do
+      expected = Discord::REST::GatewayResponse.from_json load_json("gateway_response")
+      Discord::MockServer.prepare_endpoint("GET", "/gateway", 200,
+        {"Content-Type" => "application/json"}, expected.to_json)
+      client.get_gateway.should eq expected
+    end
+
+    it "#get_gateway_bot" do
+      expected = Discord::REST::GatewayBotResponse.from_json load_json("gateway_bot_response")
+      Discord::MockServer.prepare_endpoint("GET", "/gateway/bot", 200,
+        {"Content-Type" => "application/json"}, expected.to_json)
+      client.get_gateway_bot.should eq expected
+    end
+
+    it "#get_oauth2_application" do
+      expected = Discord::OAuth2Application.from_json load_json("oauth2_application")
+      Discord::MockServer.prepare_endpoint("GET", "/oauth2/applications/@me", 200,
+        {"Content-Type" => "application/json"}, expected.to_json)
+      client.get_oauth2_application.should eq expected
+    end
+
     it "#create_message" do
       expected = Discord::Message.from_json load_json("message")
       Discord::MockServer.prepare_endpoint("POST", "/channels/1/messages", 200,
