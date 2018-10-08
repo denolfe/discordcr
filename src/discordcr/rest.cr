@@ -769,13 +769,20 @@ module Discord
     # permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-channel)
-    def create_guild_channel(guild_id : UInt64 | Snowflake, name : String, type : ChannelType,
-                             bitrate : UInt32?, user_limit : UInt32?)
+    def create_guild_channel(guild_id : UInt64 | Snowflake, name : String, type : ChannelType? = nil,
+                             topic : String? = nil, bitrate : UInt32? = nil, user_limit : UInt32? = nil,
+                             rate_limit_per_user : Int32? = nil, permission_overwrites : Array(Overwrite)? = nil,
+                             parent_id : UInt64 | Snowflake | Nil = nil, nsfw : Bool? = nil)
       json = encode_tuple(
         name: name,
         type: type,
+        topic: topic,
         bitrate: bitrate,
-        user_limit: user_limit
+        user_limit: user_limit,
+        rate_limit_per_user: rate_limit_per_user,
+        permission_overwrites: permission_overwrites,
+        parent_id: parent_id,
+        nsfw: nsfw
       )
 
       response = request(
