@@ -120,8 +120,10 @@ module Discord
   struct ReactionEmoji
     JSON.mapping(
       id: Snowflake?,
-      name: String
+      name: String?
     )
+
+    getter! name : String
   end
 
   struct Embed

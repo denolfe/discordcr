@@ -113,4 +113,14 @@ describe Discord do
       packet.event_type.should eq "test"
     end
   end
+
+  describe Discord::ReactionEmoji do
+    it "handles custom emoji with null name (Discord bug)" do
+      json = %({"name": null, "id": "1"})
+      reaction = Discord::ReactionEmoji.from_json(json)
+      expect_raises(Exception) do
+        reaction.name
+      end
+    end
+  end
 end
