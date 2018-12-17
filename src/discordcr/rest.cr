@@ -699,9 +699,9 @@ module Discord
     # Gets a list of emoji on the guild.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#list-guild-emojis)
-    def get_guild_emojis(guild_id : UInt64 | Snowflake)
+    def list_guild_emojis(guild_id : UInt64 | Snowflake)
       response = request(
-        :guild_gid_emojis,
+        :guilds_gid_emojis,
         guild_id,
         "GET",
         "/guilds/#{guild_id}/emojis",
@@ -712,12 +712,28 @@ module Discord
       Array(Emoji).from_json(response.body)
     end
 
+    # Gets a specific emoji by guild ID and emoji ID.
+    #
+    # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#get-guild-emoji)
+    def get_guild_emoji(guild_id : UInt64 | Snowflake, emoji_id : UInt64 | Snowflake)
+      response = request(
+        :guilds_gid_emojis_eid,
+        guild_id,
+        "GET",
+        "/guilds/#{guild_id}/emojis/#{emoji_id}",
+        HTTP::Headers.new,
+        nil
+      )
+
+      Emoji.from_json(response.body)
+    end
+
     # Modifies a guild emoji. Requires the "Manage Emojis" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#modify-guild-emoji)
     def modify_guild_emoji(guild_id : UInt64 | Snowflake, emoji_id : UInt64 | Snowflake, name : String)
       response = request(
-        :guilds_gid_emojis,
+        :guilds_gid_emojis_eid,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}/emojis/#{emoji_id}",
@@ -738,7 +754,7 @@ module Discord
       )
 
       response = request(
-        :guild_gid_emojis,
+        :guilds_gid_emojis,
         guild_id,
         "POST",
         "/guilds/#{guild_id}/emojis",
@@ -747,6 +763,20 @@ module Discord
       )
 
       Emoji.from_json(response.body)
+    end
+
+    # Deletes a guild emoji. Requires the "Manage Emojis" permission.
+    #
+    # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#delete-guild-emoji)
+    def delete_guild_emoji(guild_id : UInt64 | Snowflake, emoji_id : UInt64 | Snowflake)
+      request(
+        :guilds_gid_emojis_eid,
+        guild_id,
+        "DELETE",
+        "/guilds/#{guild_id}/emojis/#{emoji_id}",
+        HTTP::Headers.new,
+        nil
+      )
     end
 
     # Gets a list of channels in a guild.
