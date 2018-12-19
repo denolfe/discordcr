@@ -28,11 +28,5 @@ module Discord
     ManageRoles         = 1 << 28
     ManageWebhooks      = 1 << 29
     ManageEmojis        = 1 << 30
-
-    def self.new(pull : JSON::PullParser)
-      # see https://github.com/crystal-lang/crystal/issues/3448
-      # #from_value errors
-      Permissions.new(pull.read_int.to_u64)
-    end
   end
 end

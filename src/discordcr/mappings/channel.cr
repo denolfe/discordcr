@@ -14,7 +14,7 @@ module Discord
 
   struct Message
     JSON.mapping(
-      type: MessageType,
+      type: {type: MessageType, converter: EnumConverter(MessageType, UInt8)},
       content: String,
       id: Snowflake,
       channel_id: Snowflake,
@@ -43,7 +43,7 @@ module Discord
 
   struct Activity
     JSON.mapping(
-      type: ActivityType,
+      type: {type: ActivityType, converter: EnumConverter(ActivityType, UInt8)},
       party_id: String?
     )
   end
@@ -67,7 +67,7 @@ module Discord
 
     JSON.mapping(
       id: Snowflake,
-      type: ChannelType,
+      type: {type: ChannelType, converter: EnumConverter(ChannelType, UInt8)},
       guild_id: Snowflake?,
       name: String?,
       permission_overwrites: Array(Overwrite)?,
@@ -94,7 +94,7 @@ module Discord
   struct PrivateChannel
     JSON.mapping(
       id: Snowflake,
-      type: ChannelType,
+      type: {type: ChannelType, converter: EnumConverter(ChannelType, UInt8)},
       recipients: Array(User),
       last_message_id: Snowflake?
     )
@@ -104,8 +104,8 @@ module Discord
     JSON.mapping(
       id: Snowflake,
       type: String,
-      allow: Permissions,
-      deny: Permissions
+      allow: {type: Permissions, converter: EnumConverter(Permissions, UInt64)},
+      deny: {type: Permissions, converter: EnumConverter(Permissions, UInt64)}
     )
   end
 

@@ -73,7 +73,7 @@ module Discord
       name: String,
       icon: String?,
       owner: Bool,
-      permissions: Permissions
+      permissions: {type: Permissions, converter: EnumConverter(Permissions, UInt64)}
     )
   end
 
