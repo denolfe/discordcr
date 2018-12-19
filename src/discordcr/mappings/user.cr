@@ -2,6 +2,23 @@ require "./converters"
 
 module Discord
   struct User
+    @[Flags]
+    enum Flags
+      HypeSquadEvents = 1 << 2
+      HouseBravery    = 1 << 6
+      HouseBrilliance = 1 << 7
+      HouseBalance    = 1 << 8
+
+      def self.new(parser : JSON::PullParser)
+        new(parser.read_int.to_i32)
+      end
+    end
+
+    enum PremiumType
+      NitroClassic = 1
+      Nitro        = 2
+    end
+
     # :nodoc:
     def initialize(partial : PartialUser)
       @username = partial.username.not_nil!
@@ -21,7 +38,9 @@ module Discord
       bot: Bool?,
       mfa_enabled: Bool?,
       verified: Bool?,
-      member: PartialGuildMember?
+      member: PartialGuildMember?,
+      flags: Flags?,
+      premium_type: PremiumType?
     )
 
     # Produces a CDN URL to this user's avatar in the given `size`.
