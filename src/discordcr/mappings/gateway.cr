@@ -339,10 +339,11 @@ module Discord
       JSON.mapping(
         user: PartialUser,
         roles: Array(Snowflake),
-        game: GamePlaying?,
+        game: Activity?,
         nick: String?,
         guild_id: Snowflake,
-        status: String
+        status: String,
+        activities: Array(Activity)?
       )
     end
 

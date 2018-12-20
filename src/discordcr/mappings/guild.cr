@@ -255,11 +255,85 @@ module Discord
     )
   end
 
+  struct Activity
+    enum Type
+      Game      = 0
+      Streaming = 1
+      Listening = 2
+
+      def self.new(parser : JSON::PullParser)
+        new(parser.read_int.to_i32)
+      end
+    end
+
+    @[Flags]
+    enum Flags
+      Instance
+      Join
+      Spectate
+      JoinRequest
+      Sync
+      Play
+
+      def self.new(parser : JSON::PullParser)
+        value = parser.read_int.to_i32
+        new(value)
+      end
+    end
+
+    struct Timestamps
+      JSON.mapping(
+        start: {type: Time?, converter: Time::EpochMillisConverter},
+        end: {type: Time?, converter: Time::EpochMillisConverter}
+      )
+    end
+
+    struct Party
+      JSON.mapping(
+        id: String?,
+        size: Array(Int32)?
+      )
+    end
+
+    struct Assets
+      JSON.mapping(
+        large_image: String?,
+        large_text: String?,
+        small_image: String?,
+        small_text: String?
+      )
+    end
+
+    struct Secrets
+      JSON.mapping(
+        join: String?,
+        spectate: String?,
+        match: String?
+      )
+    end
+
+    JSON.mapping(
+      name: String,
+      type: Type,
+      url: String?,
+      timestamps: Timestamps?,
+      application_id: Snowflake?,
+      details: String?,
+      state: String?,
+      party: Party?,
+      assets: Assets?,
+      secrets: Secrets?,
+      instance: Bool?,
+      flags: Flags?
+    )
+  end
+
   struct Presence
     JSON.mapping(
       user: PartialUser,
-      game: GamePlaying?,
-      status: String
+      game: Activity?,
+      status: String,
+      activities: Array(Activity)?
     )
   end
 end
