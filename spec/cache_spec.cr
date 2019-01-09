@@ -4,6 +4,14 @@ module OptionConverter(T)
   def self.from_json(parser : JSON::PullParser)
     parser.read_string_or_null || T.null_value
   end
+
+  def self.to_json(value, builder : JSON::Builder)
+    if value == T.null_value
+      builder.null
+    else
+      value.to_json(builder)
+    end
+  end
 end
 
 struct User
@@ -22,6 +30,10 @@ struct User
     def self.null_value
       Default
     end
+
+    def to_json(builder : JSON::Builder)
+      builder.null
+    end
   end
 
   JSON.mapping(avatar: {type: String | Avatar | Nil, presence: true, converter: OptionConverter(User::Avatar)})
@@ -39,6 +51,8 @@ describe User do
   it "returns default when key present and null" do
     user = User.from_json(%({"avatar":null}))
     user.avatar.should eq User::Avatar::Default
+    json = JSON.parse(user.to_json)
+    json["avatar"].should eq nil
   end
 
   it "returns a present avatar string" do
@@ -49,6 +63,10 @@ describe User do
   it "returns unknown on absence" do
     user = User.from_json(%({}))
     user.avatar.should eq nil
+    json = JSON.parse(user.to_json)
+    expect_raises(KeyError) do
+      json["avatar"]
+    end
   end
 end
 
