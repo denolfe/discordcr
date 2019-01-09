@@ -1,5 +1,57 @@
 require "./spec_helper"
 
+module OptionConverter(T)
+  def self.from_json(parser : JSON::PullParser)
+    parser.read_string_or_null || T.null_value
+  end
+end
+
+struct User
+  # include JSON::Serializable
+
+  # For JSON::Serializable:
+  # @[JSON::Field(presence: true, converter: OptionConverter(User::Avatar))]
+  # @avatar : String | Avatar | Nil = nil
+
+  # @[JSON::Field(ignore: true)]
+  # @avatar_present : Bool
+
+  enum Avatar
+    Default
+
+    def self.null_value
+      Default
+    end
+  end
+
+  JSON.mapping(avatar: {type: String | Avatar | Nil, presence: true, converter: OptionConverter(User::Avatar)})
+
+  def avatar
+    if @avatar_present && @avatar.nil?
+      Avatar::Default
+    else
+      @avatar # (String)
+    end
+  end
+end
+
+describe User do
+  it "returns default when key present and null" do
+    user = User.from_json(%({"avatar":null}))
+    user.avatar.should eq User::Avatar::Default
+  end
+
+  it "returns a present avatar string" do
+    user = User.from_json(%({"avatar":"avatar"}))
+    user.avatar.should eq "avatar"
+  end
+
+  it "returns unknown on absence" do
+    user = User.from_json(%({}))
+    user.avatar.should eq nil
+  end
+end
+
 describe Discord::Cache do
   it "BUG: client doesn't update a removed avatar" do
     client = Discord::Client.new("", logger: Logger.new(STDOUT, level: Logger::Severity::DEBUG))
