@@ -186,7 +186,7 @@ module Discord
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#modify-channel)
     def modify_channel(channel_id : UInt64 | Snowflake, name : String? = nil, position : UInt32? = nil,
                        topic : String? = nil, bitrate : UInt32? = nil, user_limit : UInt32? = nil,
-                       nsfw : Bool? = nil, rate_limit_per_user : Int32? = nil)
+                       nsfw : Bool? = nil, rate_limit_per_user : Int32? = nil, reason : String? = nil)
       json = encode_tuple(
         name: name,
         position: position,
@@ -196,12 +196,15 @@ module Discord
         rate_limit_per_user: rate_limit_per_user
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :channels_cid,
         channel_id,
         "PATCH",
         "/channels/#{channel_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -211,13 +214,16 @@ module Discord
     # Deletes a channel by ID. Requires the "Manage Channel" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#deleteclose-channel)
-    def delete_channel(channel_id : UInt64 | Snowflake)
+    def delete_channel(channel_id : UInt64 | Snowflake, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :channels_cid,
         channel_id,
         "DELETE",
         "/channels/#{channel_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -497,19 +503,23 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#edit-channel-permissions)
     def edit_channel_permissions(channel_id : UInt64 | Snowflake, overwrite_id : UInt64 | Snowflake,
-                                 type : String, allow : Permissions, deny : Permissions)
+                                 type : String, allow : Permissions, deny : Permissions,
+                                 reason : String? = nil)
       json = encode_tuple(
         allow: allow,
         deny: deny,
         type: type
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :channels_cid_permissions_oid,
         channel_id,
         "PUT",
         "/channels/#{channel_id}/permissions/#{overwrite_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
     end
@@ -536,19 +546,23 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#create-channel-invite)
     def create_channel_invite(channel_id : UInt64 | Snowflake, max_age : UInt32 = 0_u32,
-                              max_uses : UInt32 = 0_u32, temporary : Bool = false)
+                              max_uses : UInt32 = 0_u32, temporary : Bool = false,
+                              reason : String? = nil)
       json = encode_tuple(
         max_age: max_age,
         max_uses: max_uses,
         temporary: temporary
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :channels_cid_invites,
         channel_id,
         "POST",
         "/channels/#{channel_id}/invites",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -559,7 +573,11 @@ module Discord
     # Permissions" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#delete-channel-permission)
-    def delete_channel_permission(channel_id : UInt64 | Snowflake, overwrite_id : UInt64 | Snowflake)
+    def delete_channel_permission(channel_id : UInt64 | Snowflake, overwrite_id : UInt64 | Snowflake,
+                                  reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :channels_cid_permissions_oid,
         channel_id,
@@ -656,7 +674,7 @@ module Discord
     def modify_guild(guild_id : UInt64 | Snowflake, name : String? = nil, region : String? = nil,
                      verification_level : UInt8? = nil, afk_channel_id : UInt64 | Snowflake | Nil = nil,
                      afk_timeout : Int32? = nil, icon : String? = nil, owner_id : UInt64 | Snowflake | Nil = nil,
-                     splash : String? = nil)
+                     splash : String? = nil, reason : String? = nil)
       json = encode_tuple(
         name: name,
         region: region,
@@ -668,12 +686,15 @@ module Discord
         splash: splash
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :guilds_gid,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -715,13 +736,17 @@ module Discord
     # Modifies a guild emoji. Requires the "Manage Emojis" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#modify-guild-emoji)
-    def modify_guild_emoji(guild_id : UInt64 | Snowflake, emoji_id : UInt64 | Snowflake, name : String)
+    def modify_guild_emoji(guild_id : UInt64 | Snowflake, emoji_id : UInt64 | Snowflake, name : String,
+                           reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :guilds_gid_emojis,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}/emojis/#{emoji_id}",
-        HTTP::Headers.new,
+        headers,
         {name: name}.to_json
       )
 
@@ -731,18 +756,21 @@ module Discord
     # Creates a guild emoji. Requires the "Manage Emojis" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/emoji#create-guild-emoji)
-    def create_guild_emoji(guild_id : UInt64 | Snowflake, name : String, image : String)
+    def create_guild_emoji(guild_id : UInt64 | Snowflake, name : String, image : String, reason : String? = nil)
       json = encode_tuple(
         name: name,
         image: image,
       )
+
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
 
       response = request(
         :guild_gid_emojis,
         guild_id,
         "POST",
         "/guilds/#{guild_id}/emojis",
-        HTTP::Headers.new,
+        headers,
         json
       )
 
@@ -770,7 +798,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-channel)
     def create_guild_channel(guild_id : UInt64 | Snowflake, name : String, type : ChannelType,
-                             bitrate : UInt32?, user_limit : UInt32?)
+                             bitrate : UInt32?, user_limit : UInt32?, reason : String? = nil)
       json = encode_tuple(
         name: name,
         type: type,
@@ -778,12 +806,15 @@ module Discord
         user_limit: user_limit
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :guilds_gid_channels,
         guild_id,
         "POST",
         "/guilds/#{guild_id}/channels",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -826,13 +857,17 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel-positions)
     def modify_guild_channel_positions(guild_id : UInt64 | Snowflake,
-                                       positions : Array(ModifyChannelPositionPayload))
+                                       positions : Array(ModifyChannelPositionPayload),
+                                       reason : String? = nil)
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_channels,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}/channels",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         positions.to_json
       )
     end
@@ -937,7 +972,7 @@ module Discord
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-member)
     def modify_guild_member(guild_id : UInt64 | Snowflake, user_id : UInt64 | Snowflake, nick : String? = nil,
                             roles : Array(UInt64 | Snowflake)? = nil, mute : Bool? = nil, deaf : Bool? = nil,
-                            channel_id : UInt64 | Snowflake | Nil = nil)
+                            channel_id : UInt64 | Snowflake | Nil = nil, reason : String? = nil)
       json = encode_tuple(
         nick: nick,
         roles: roles,
@@ -946,12 +981,15 @@ module Discord
         channel_id: channel_id
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_members_uid,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}/members/#{user_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
     end
@@ -975,13 +1013,17 @@ module Discord
     # Kicks a member from the server. Requires the "Kick Members" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#remove-guild-member)
-    def remove_guild_member(guild_id : UInt64 | Snowflake, user_id : UInt64 | Snowflake)
+    def remove_guild_member(guild_id : UInt64 | Snowflake, user_id : UInt64 | Snowflake,
+                            reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_members_uid,
         guild_id,
         "DELETE",
         "/guilds/#{guild_id}/members/#{user_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -989,13 +1031,16 @@ module Discord
     # Adds a role to a member. Requires the "Manage Roles" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#add-guild-member-role)
-    def add_guild_member_role(guild_id : UInt64, user_id : UInt64, role_id : UInt64)
+    def add_guild_member_role(guild_id : UInt64, user_id : UInt64, role_id : UInt64, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_members_uid_roles_rid,
         guild_id,
         "PUT",
         "/guilds/#{guild_id}/members/#{user_id}/roles/#{role_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -1003,13 +1048,16 @@ module Discord
     # Removes a role from a member. Requires the "Manage Roles" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#remove-guild-member-role)
-    def remove_guild_member_role(guild_id : UInt64, user_id : UInt64, role_id : UInt64)
+    def remove_guild_member_role(guild_id : UInt64, user_id : UInt64, role_id : UInt64, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_members_uid_roles_rid,
         guild_id,
         "DELETE",
         "/guilds/#{guild_id}/members/#{user_id}/roles/#{role_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -1071,13 +1119,16 @@ module Discord
     # Unbans a member from the guild. Requires the "Ban Members" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#remove-guild-ban)
-    def remove_guild_ban(guild_id : UInt64 | Snowflake, user_id : UInt64 | Snowflake)
+    def remove_guild_ban(guild_id : UInt64 | Snowflake, user_id : UInt64 | Snowflake, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_bans_uid,
         guild_id,
         "DELETE",
         "/guilds/#{guild_id}/bans/#{user_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -1103,7 +1154,7 @@ module Discord
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-role)
     def create_guild_role(guild_id : UInt64 | Snowflake, name : String? = nil,
                           permissions : Permissions? = nil, colour : UInt32 = 0_u32,
-                          hoist : Bool = false, mentionable : Bool = false)
+                          hoist : Bool = false, mentionable : Bool = false, reason : String? = nil)
       json = encode_tuple(
         name: name,
         permissions: permissions,
@@ -1112,12 +1163,15 @@ module Discord
         mentionable: mentionable
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :get_guild_roles,
         guild_id,
         "POST",
         "/guilds/#{guild_id}/roles",
-        HTTP::Headers.new,
+        headers,
         json
       )
 
@@ -1130,7 +1184,7 @@ module Discord
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-role)
     def modify_guild_role(guild_id : UInt64 | Snowflake, role_id : UInt64 | Snowflake, name : String? = nil,
                           permissions : Permissions? = nil, colour : UInt32? = nil,
-                          position : Int32? = nil, hoist : Bool? = nil)
+                          position : Int32? = nil, hoist : Bool? = nil, reason : String? = nil)
       json = encode_tuple(
         name: name,
         permissions: permissions,
@@ -1139,12 +1193,15 @@ module Discord
         hoist: hoist
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :guilds_gid_roles_rid,
         guild_id,
         "PATCH",
         "/guilds/#{guild_id}/roles/#{role_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -1155,13 +1212,16 @@ module Discord
     # to be lower than the bot's highest role.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#delete-guild-role)
-    def delete_guild_role(guild_id : UInt64 | Snowflake, role_id : UInt64 | Snowflake)
+    def delete_guild_role(guild_id : UInt64 | Snowflake, role_id : UInt64 | Snowflake, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :guilds_gid_roles_rid,
         guild_id,
         "DELETE",
         "/guilds/#{guild_id}/roles/#{role_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
@@ -1531,13 +1591,16 @@ module Discord
     # server.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/invite#delete-invite)
-    def delete_invite(code : String)
+    def delete_invite(code : String, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :invites_code,
         nil,
         "DELETE",
         "/invites/#{code}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
 
@@ -1668,19 +1731,22 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/webhook#modify-webhook).
     def modify_webhook(webhook_id : UInt64 | Snowflake, name : String? = nil, avatar : String? = nil,
-                       channel_id : UInt64 | Snowflake | Nil = nil)
+                       channel_id : UInt64 | Snowflake | Nil = nil, reason : String? = nil)
       json = encode_tuple(
         name: name,
         avatar: avatar,
         channel_id: channel_id
       )
 
+      headers = HTTP::Headers{"Content-Type" => "application/json"}
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       response = request(
         :webhooks_wid,
         webhook_id,
         "PATCH",
         "/webhooks/#{webhook_id}",
-        HTTP::Headers{"Content-Type" => "application/json"},
+        headers,
         json
       )
 
@@ -1712,13 +1778,16 @@ module Discord
     # Deletes a webhook. User must be owner.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/webhook#delete-webhook)
-    def delete_webhook(webhook_id : UInt64 | Snowflake)
+    def delete_webhook(webhook_id : UInt64 | Snowflake, reason : String? = nil)
+      headers = HTTP::Headers.new
+      headers.add("X-Audit-Log-Reason", URI.escape(reason)) if reason
+
       request(
         :webhooks_wid,
         webhook_id,
         "DELETE",
         "/webhooks/#{webhook_id}",
-        HTTP::Headers.new,
+        headers,
         nil
       )
     end
