@@ -312,14 +312,16 @@ module Discord
     #
     # For more details on the format of the `embed` object, look at the
     # [relevant documentation](https://discordapp.com/developers/docs/resources/channel#embed-object).
-    def create_message(channel_id : UInt64 | Snowflake, content : String, embed : Embed? = nil, tts : Bool = false)
+    def create_message(channel_id : UInt64 | Snowflake, content : String, embed : Embed? = nil,
+                       tts : Bool = false, nonce : UInt64 | Snowflake | Nil = nil)
+      nonce = Snowflake.new(nonce) if nonce.is_a?(UInt64)
       response = request(
         :channels_cid_messages,
         channel_id,
         "POST",
         "/channels/#{channel_id}/messages",
         HTTP::Headers{"Content-Type" => "application/json"},
-        {content: content, tts: tts, embed: embed}.to_json
+        {content: content, tts: tts, embed: embed, nonce: nonce}.to_json
       )
 
       Message.from_json(response.body)

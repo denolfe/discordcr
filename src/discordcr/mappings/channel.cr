@@ -19,6 +19,7 @@ module Discord
       id: Snowflake,
       channel_id: Snowflake,
       guild_id: Snowflake?,
+      nonce: JSON::Any?,
       author: User,
       member: PartialGuildMember?,
       timestamp: {type: Time, converter: TimestampConverter},
