@@ -48,6 +48,7 @@ module Discord
     end
   end
 
+  # :nodoc:
   module MessageNonceConverter
     def self.from_json(parser : JSON::PullParser)
       kind = parser.kind
