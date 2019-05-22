@@ -60,11 +60,7 @@ module Discord
       when :null
         parser.read_null
       else
-        raise JSON::ParseException.new(
-          "Unexpected nonce value: #{parser.read_raw} (#{kind})",
-          parser.line_number,
-          parser.column_number
-        )
+        parser.read_raw
       end
     end
 

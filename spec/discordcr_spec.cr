@@ -130,29 +130,44 @@ describe Discord do
   end
 
   describe Discord::MessageNonceConverter do
-    examples = { {"null", nil}, {"1", 1_i64}, {"\"string\"", "string"} }
+    # Valid types are converted
+    good_examples = {
+      {"null", nil},
+      {"1", 1_i64},
+      {"\"string\"", "string"},
+    }
+
+    # Invalid types are preserved as strings
+    bad_examples = {
+      {"true", "true"},
+      {"[]", "[]"},
+      {"{}", "{}"},
+      {"1.23", "1.23"},
+    }
 
     it ".from_json" do
-      examples.each do |json, expected|
-        parser = JSON::PullParser.new(json)
-        span = Discord::MessageNonceConverter.from_json(parser)
-        span.should eq expected
+      {good_examples, bad_examples}.each do |examples|
+        examples.each do |json, expected|
+          parser = JSON::PullParser.new(json)
+          span = Discord::MessageNonceConverter.from_json(parser)
+          span.should eq expected
+        end
       end
     end
 
     it ".to_json" do
-      examples.each do |expected, value|
+      good_examples.each do |expected, value|
         json = JSON.build do |builder|
           Discord::MessageNonceConverter.to_json(value, builder)
         end
         json.should eq expected
       end
-    end
 
-    it ".from_json raises on unsupported type" do
-      parser = JSON::PullParser.new("true")
-      expect_raises(JSON::ParseException, "Unexpected nonce value: true (bool) at 1:1") do
-        Discord::MessageNonceConverter.from_json(parser)
+      bad_examples.each do |expected, value|
+        json = JSON.build do |builder|
+          Discord::MessageNonceConverter.to_json(value, builder)
+        end
+        json.should eq "\"#{expected}\""
       end
     end
   end
