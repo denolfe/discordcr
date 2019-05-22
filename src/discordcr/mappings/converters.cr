@@ -47,4 +47,28 @@ module Discord
       builder.scalar(value.milliseconds)
     end
   end
+
+  module MessageNonceConverter
+    def self.from_json(parser : JSON::PullParser)
+      kind = parser.kind
+      case kind
+      when :int
+        parser.read_int
+      when :string
+        parser.read_string
+      when :null
+        parser.read_null
+      else
+        raise JSON::ParseException.new(
+          "Unexpected nonce value: #{parser.read_raw} (#{kind})",
+          parser.line_number,
+          parser.column_number
+        )
+      end
+    end
+
+    def self.to_json(value : Int64 | String | Nil, builder : JSON::Builder)
+      builder.scalar(value)
+    end
+  end
 end

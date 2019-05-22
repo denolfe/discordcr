@@ -19,7 +19,7 @@ module Discord
       id: Snowflake,
       channel_id: Snowflake,
       guild_id: Snowflake?,
-      nonce: JSON::Any?,
+      nonce: {type: Int64 | String | Nil, converter: MessageNonceConverter},
       author: User,
       member: PartialGuildMember?,
       timestamp: {type: Time, converter: TimestampConverter},
