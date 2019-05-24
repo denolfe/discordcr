@@ -136,7 +136,8 @@ describe Discord::Guild do
     "emojis": [],
     "features": [],
     "default_message_notifications": 1,
-    "explicit_content_filter": 1
+    "explicit_content_filter": 1,
+    "premium_tier": 0
   }
   JSON
 

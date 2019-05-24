@@ -190,7 +190,9 @@ module Discord
         widget_channel_id: Snowflake?,
         default_message_notifications: UInt8,
         explicit_content_filter: UInt8,
-        system_channel_id: Snowflake?
+        system_channel_id: Snowflake?,
+        premium_tier: Int32,
+        premium_subscriber_count: Int32?
       )
 
       {% unless flag?(:correct_english) %}
@@ -250,7 +252,8 @@ module Discord
         user: User,
         roles: Array(Snowflake),
         nick: {type: String, nilable: true},
-        guild_id: Snowflake
+        guild_id: Snowflake,
+        premium_since: {type: Time?, converter: MaybeTimestampConverter}
       )
     end
 

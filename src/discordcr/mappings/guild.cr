@@ -21,6 +21,8 @@ module Discord
       @default_message_notifications = payload.default_message_notifications
       @explicit_content_filter = payload.explicit_content_filter
       @system_channel_id = payload.system_channel_id
+      @premium_tier = payload.premium_tier
+      @premium_subscriber_count = payload.premium_subscriber_count
     end
 
     JSON.mapping(
@@ -42,7 +44,9 @@ module Discord
       widget_channel_id: Snowflake?,
       default_message_notifications: UInt8,
       explicit_content_filter: UInt8,
-      system_channel_id: Snowflake?
+      system_channel_id: Snowflake?,
+      premium_tier: Int32,
+      premium_subscriber_count: Int32?
     )
 
     {% unless flag?(:correct_english) %}
@@ -126,7 +130,8 @@ module Discord
       roles: Array(Snowflake),
       joined_at: {type: Time?, converter: MaybeTimestampConverter},
       deaf: Bool?,
-      mute: Bool?
+      mute: Bool?,
+      premium_since: {type: Time?, converter: MaybeTimestampConverter}
     )
 
     # Produces a string to mention this member in a message
@@ -145,7 +150,8 @@ module Discord
       roles: Array(Snowflake),
       joined_at: {type: Time, converter: TimestampConverter},
       deaf: Bool,
-      mute: Bool
+      mute: Bool,
+      premium_since: {type: Time?, converter: MaybeTimestampConverter}
     )
   end
 
