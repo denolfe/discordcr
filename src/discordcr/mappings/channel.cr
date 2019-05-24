@@ -10,6 +10,7 @@ module Discord
     ChannelIconChange    = 5
     ChannelPinnedMessage = 6
     GuildMemberJoin      = 7
+    GuildNitroBoost      = 8
   end
 
   struct Message
