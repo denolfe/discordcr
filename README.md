@@ -22,6 +22,23 @@ This means that the user has full control over them, but also full
 responsibility. discordcr does not support user accounts; it may work but
 likely doesn't.
 
+## Fork status
+
+This is a fork from [meew0/discordcr](https://github.com/meew0/discordcr).
+I've started maintaining my own fork since I've been in need of additional
+library support for things such as new Discord features and utilities.
+
+Please feel free to use this fork and report any issues - I will address any
+that come up as soon as I can.
+
+If you have issues or bug reports, **please ask in the #crystal-discordcr**
+channel first if you can. Especially if its just a feature request.
+
+Feel free to contact me directly as well - `z64#1337`.
+
+In the future, the changes to this fork may be ported upstream. I will also
+merge upstream PRs here that I have approved.
+
 ## Installation
 
 Add this to your application's `shard.yml`:
@@ -29,13 +46,13 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   discordcr:
-    github: meew0/discordcr
+    github: z64/discordcr
 ```
 
 ## Usage
 
 An example bot can be found
-[here](https://github.com/meew0/discordcr/blob/master/examples/ping.cr). More
+[here](https://github.com/z64/discordcr/blob/master/examples/ping.cr). More
 examples will come in the future.
 
 A short overview of library structure: the `Client` class includes the `REST`
@@ -76,13 +93,25 @@ https://meew0.github.io/discordcr/doc/v0.4.0/.
 
 ## Contributing
 
-1. Fork it (https://github.com/meew0/discordcr/fork)
+1. Fork it (https://github.com/z64/discordcr/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+CircleCI is used for continuous integration. You can run tests locally in
+Docker using the following commands if you want:
+
+```
+$ circleci local execute --job specs
+$ circleci local execute --job format
+$ circleci local execute --job examples
+```
+
+See `.circleci/config.yml` for more details.
+
 ## Contributors
 
 - [meew0](https://github.com/meew0) - creator, maintainer
 - [RX14](https://github.com/RX14) - Crystal expert, maintainer
+- [z64](https://github.com/RX14) - maintainer
