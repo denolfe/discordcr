@@ -184,8 +184,8 @@ module Discord
     # permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#modify-channel)
-    def modify_channel(channel_id : UInt64 | Snowflake, name : String? = nil, position : UInt32? = nil,
-                       topic : String? = nil, bitrate : UInt32? = nil, user_limit : UInt32? = nil,
+    def modify_channel(channel_id : UInt64 | Snowflake, name : String? = nil, position : Int32? = nil,
+                       topic : String? = nil, bitrate : Int32? = nil, user_limit : Int32? = nil,
                        nsfw : Bool? = nil, rate_limit_per_user : Int32? = nil)
       json = encode_tuple(
         name: name,
@@ -541,8 +541,8 @@ module Discord
     # permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/channel#create-channel-invite)
-    def create_channel_invite(channel_id : UInt64 | Snowflake, max_age : UInt32 = 0_u32,
-                              max_uses : UInt32 = 0_u32, temporary : Bool = false)
+    def create_channel_invite(channel_id : UInt64 | Snowflake, max_age : Int32 = 0_u32,
+                              max_uses : Int32 = 0_u32, temporary : Bool = false)
       json = encode_tuple(
         max_age: max_age,
         max_uses: max_uses,
@@ -660,7 +660,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild)
     def modify_guild(guild_id : UInt64 | Snowflake, name : String? = nil, region : String? = nil,
-                     verification_level : UInt8? = nil, afk_channel_id : UInt64 | Snowflake | Nil = nil,
+                     verification_level : GuildVerificationLevel? = nil, afk_channel_id : UInt64 | Snowflake | Nil = nil,
                      afk_timeout : Int32? = nil, icon : String? = nil, owner_id : UInt64 | Snowflake | Nil = nil,
                      splash : String? = nil)
       json = encode_tuple(
@@ -806,7 +806,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-channel)
     def create_guild_channel(guild_id : UInt64 | Snowflake, name : String, type : ChannelType,
-                             bitrate : UInt32?, user_limit : UInt32?)
+                             bitrate : Int32?, user_limit : Int32?)
       json = encode_tuple(
         name: name,
         type: type,
@@ -932,7 +932,7 @@ module Discord
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#add-guild-member)
     def add_guild_member(guild_id : UInt64, user_id : UInt64,
                          access_token : String, nick : String? = nil,
-                         roles : Array(UInt64)? = nil, mute : Bool? = nil,
+                         roles : Array(UInt64 | Snowflake)? = nil, mute : Bool? = nil,
                          deaf : Bool? = nil)
       json = encode_tuple(
         access_token: access_token,
@@ -1138,7 +1138,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#create-guild-role)
     def create_guild_role(guild_id : UInt64 | Snowflake, name : String? = nil,
-                          permissions : Permissions? = nil, colour : UInt32 = 0_u32,
+                          permissions : Permissions? = nil, colour : Int32 = 0_u32,
                           hoist : Bool = false, mentionable : Bool = false)
       json = encode_tuple(
         name: name,
@@ -1165,7 +1165,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-role)
     def modify_guild_role(guild_id : UInt64 | Snowflake, role_id : UInt64 | Snowflake, name : String? = nil,
-                          permissions : Permissions? = nil, colour : UInt32? = nil,
+                          permissions : Permissions? = nil, colour : Int32? = nil,
                           position : Int32? = nil, hoist : Bool? = nil)
       json = encode_tuple(
         name: name,
@@ -1224,7 +1224,7 @@ module Discord
     # days. Requires the "Kick Members" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#get-guild-prune-count)
-    def get_guild_prune_count(guild_id : UInt64 | Snowflake, days : UInt32)
+    def get_guild_prune_count(guild_id : UInt64 | Snowflake, days : Int32)
       response = request(
         :guilds_gid_prune,
         guild_id,
@@ -1241,7 +1241,7 @@ module Discord
     # *days* days. Requires the "Kick Members" permission.
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#begin-guild-prune)
-    def begin_guild_prune(guild_id : UInt64 | Snowflake, days : UInt32)
+    def begin_guild_prune(guild_id : UInt64 | Snowflake, days : Int32)
       response = request(
         :guilds_gid_prune,
         guild_id,
@@ -1313,7 +1313,7 @@ module Discord
     #
     # [API docs for this method](https://discordapp.com/developers/docs/resources/guild#modify-guild-integration)
     def modify_guild_integration(guild_id : UInt64 | Snowflake, integration_id : UInt64 | Snowflake,
-                                 expire_behaviour : UInt8,
+                                 expire_behaviour : Int32,
                                  expire_grace_period : Int32,
                                  enable_emoticons : Bool)
       json = encode_tuple(
