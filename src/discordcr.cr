@@ -1,5 +1,5 @@
 require "./discordcr/*"
 
 module Discord
-  # TODO Put your code here
+  VERSION = "0.4.0"
 end

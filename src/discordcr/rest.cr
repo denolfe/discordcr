@@ -4,7 +4,6 @@ require "openssl/ssl/context"
 require "time/format"
 
 require "./mappings/*"
-require "./version"
 require "./errors"
 
 module Discord
