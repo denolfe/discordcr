@@ -18,18 +18,16 @@ module Discord
         page = @block.call(last_page)
         return if page.empty?
 
-        if @direction.up?
-          page.reverse_each do |item|
-            yield(item)
-            @count += 1
-            @limit.try { |l| return if @count >= l }
-          end
-        else
-          page.each do |item|
-            yield(item)
-            @count += 1
-            @limit.try { |l| return if @count >= l }
-          end
+        iterator = if @direction.up?
+                     page.reverse_each
+                   else
+                     page.each
+                   end
+
+        iterator.each do |item|
+          yield(item)
+          @count += 1
+          @limit.try { |l| return if @count >= l }
         end
 
         last_page = page
