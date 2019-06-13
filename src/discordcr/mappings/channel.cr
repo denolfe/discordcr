@@ -14,6 +14,10 @@ module Discord
     UserPremiumGuildSubscriptionTier1 =  9
     UserPremiumGuildSubscriptionTier2 = 10
     UserPremiumGuildSubscriptionTier3 = 11
+
+    def self.new(parser : JSON::PullParser)
+      MessageType.new(parser.read_int.to_u8)
+    end
   end
 
   struct Message
@@ -44,6 +48,10 @@ module Discord
     Spectate    = 2
     Listen      = 3
     JoinRequest = 5
+
+    def self.new(parser : JSON::PullParser)
+      ActivityType.new(parser.read_int.to_u8)
+    end
   end
 
   struct Activity
@@ -61,6 +69,10 @@ module Discord
     GuildCategory = 4
     GuildNews     = 5
     GuildStore    = 6
+
+    def self.new(parser : JSON::PullParser)
+      ChannelType.new(parser.read_int.to_u8)
+    end
   end
 
   struct Channel
