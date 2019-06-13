@@ -34,14 +34,14 @@ module Discord
       afk_timeout: Int32?,
       embed_enabled: Bool?,
       embed_channel_id: Snowflake?,
-      verification_level: UInt8,
+      verification_level: GuildVerificationLevel,
       roles: Array(Role),
       emoji: {type: Array(Emoji), key: "emojis"},
       features: Array(String),
       widget_enabled: {type: Bool, nilable: true},
       widget_channel_id: Snowflake?,
-      default_message_notifications: UInt8,
-      explicit_content_filter: UInt8,
+      default_message_notifications: GuildDefaultMessageNotifications,
+      explicit_content_filter: GuildExplicitContentFilter,
       system_channel_id: Snowflake?
     )
 
@@ -67,6 +67,37 @@ module Discord
       if splash = @splash
         CDN.guild_splash(id, splash, format, size)
       end
+    end
+  end
+
+  enum GuildVerificationLevel : UInt8
+    None
+    Low
+    Medium
+    High
+    VeryHigh
+
+    def self.new(parser : JSON::PullParser)
+      GuildVerificationLevel.new(parser.read_int.to_u8)
+    end
+  end
+
+  enum GuildExplicitContentFilter : UInt8
+    Disabled
+    MembersWithoutRoles
+    AllMembers
+
+    def self.new(parser : JSON::PullParser)
+      GuildExplicitContentFilter.new(parser.read_int.to_u8)
+    end
+  end
+
+  enum GuildDefaultMessageNotifications : UInt8
+    AllMessages
+    OnlyMentions
+
+    def self.new(parser : JSON::PullParser)
+      GuildDefaultMessageNotifications.new(parser.read_int.to_u8)
     end
   end
 
