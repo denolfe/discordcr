@@ -6,16 +6,16 @@ module Discord
   # information about a `Client`'s associated bot user account and owner,
   # among other OAuth2 properties.
   struct OAuth2Application
-    JSON.mapping({
-      id:                     Snowflake,
-      name:                   String,
-      icon:                   String?,
-      description:            String?,
-      rpc_origins:            Array(String)?,
-      bot_public:             Bool,
+    JSON.mapping(
+      id: Snowflake,
+      name: String,
+      icon: String?,
+      description: String?,
+      rpc_origins: Array(String)?,
+      bot_public: Bool,
       bot_require_code_grant: Bool,
-      owner:                  User,
-    })
+      owner: User
+    )
 
     # Produces a CDN URL for this application's icon in the given `format` and `size`
     def icon_url(format : CDN::ApplicationIconFormat = CDN::ApplicationIconFormat::WebP,
