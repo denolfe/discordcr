@@ -53,6 +53,11 @@ describe Discord::CDN do
     url.should eq "https://cdn.discordapp.com/app-assets/1/2.png?size=16"
   end
 
+  it "builds a team icon URL" do
+    url = Discord::CDN.team_icon(1, "hash", :png, 16)
+    url.should eq "https://cdn.discordapp.com/team-icons/1/hash.png?size=16"
+  end
+
   it "raises on an invalid size" do
     expect_raises(ArgumentError, "Size 17 is not between 16 and 2048 and a power of 2") do
       Discord::CDN.custom_emoji(1, :png, 17)
@@ -208,6 +213,25 @@ describe Discord::OAuth2Application do
     it "returns a CDN URL with the given format and size" do
       application = application_with_icon
       application.icon_url(:png, 16).should eq Discord::CDN.application_icon(application.id, application.icon.not_nil!, :png, 16)
+    end
+  end
+end
+
+describe Discord::Team do
+  describe "#icon_url" do
+    team_with_icon = Discord::Team.from_json <<-JSON
+    {
+      "owner_user_id": "1",
+      "members": [],
+      "id": "2",
+      "name": "name",
+      "icon": "hash"
+    }
+    JSON
+
+    it "returns a CDN URL with the given format and size" do
+      team = team_with_icon
+      team.icon_url(:png, 16).should eq Discord::CDN.team_icon(team.id, team.icon.not_nil!, :png, 16)
     end
   end
 end

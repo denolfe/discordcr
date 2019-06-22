@@ -141,6 +141,23 @@ module Discord::CDN
     end
   end
 
+  enum TeamIconFormat
+    PNG
+    JPEG
+    WebP
+
+    def to_s
+      case self
+      when PNG
+        "png"
+      when JPEG
+        "jpeg"
+      when WebP
+        "webp"
+      end
+    end
+  end
+
   private def check_size(value : Int32)
     in_range = (16..2048).includes?(value)
     power_of_two = (value > 0) && ((value & (value - 1)) == 0)
@@ -211,5 +228,13 @@ module Discord::CDN
                         size : Int32 = 128)
     check_size(size)
     "#{BASE_URL}/app-assets/#{application_id}/#{asset_id}.#{format}?size=#{size}"
+  end
+
+  # Produces a CDN URL for a team icon in the given `format` and `size`
+  def team_icon(team_id : UInt64 | Snowflake, icon : String,
+                format : TeamIconFormat = TeamIconFormat::WebP,
+                size : Int32 = 128)
+    check_size(size)
+    "#{BASE_URL}/team-icons/#{team_id}/#{icon}.#{format}?size=#{size}"
   end
 end
