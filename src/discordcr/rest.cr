@@ -465,6 +465,21 @@ module Discord
       Message.from_json(response.body)
     end
 
+    # Hides or shows the embeds on a message. Requires the message to either have
+    # been sent by the bot itself or the bot to have the "Manage Messages" permission.
+    #
+    # [API Docs for this method]()
+    def suppress_embeds(channel_id : UInt64 | Snowflake, message_id : UInt64 | Snowflake, suppress : Bool = true)
+      request(
+        :channels_cid_messages_mid_suppress,
+        channel_id,
+        "POST",
+        "/channels/#{channel_id}/messages/#{message_id}/suppress-embeds",
+        HTTP::Headers{"Content-Type" => "application/json"},
+        {suppress: suppress}.to_json
+      )
+    end
+
     # Deletes a message from the channel. Requires the message to either have
     # been sent by the bot itself or the bot to have the "Manage Messages"
     # permission.
