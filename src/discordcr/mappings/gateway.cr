@@ -37,13 +37,13 @@ module Discord
       def initialize(@token, @properties, @compress, @large_threshold, @shard)
       end
 
-      JSON.mapping({
-        token:           String,
-        properties:      IdentifyProperties,
-        compress:        Bool,
+      JSON.mapping(
+        token: String,
+        properties: IdentifyProperties,
+        compress: Bool,
         large_threshold: Int32,
-        shard:           Tuple(Int32, Int32)?,
-      })
+        shard: Tuple(Int32, Int32)?
+      )
     end
 
     struct IdentifyProperties
