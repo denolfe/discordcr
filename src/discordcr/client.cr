@@ -84,6 +84,12 @@ module Discord
     # compressed. Compression can be disabled with `CompressMode::None`, but this
     # is not recommended for production bots.
     #
+    # `guild_subscriptions` can be set to `false`, which will stop Discord from
+    # sending "subscription" related events. This includes presence updates,
+    # typing start, member update, member add, and member remove events. This is
+    # useful for stateless clients seeking to reduce CPU / memory load spent
+    # by the library processing these high volume events.
+    #
     # When using `Compress::Stream` compression, the buffer size can be configured
     # by passing `zlib_buffer_size`.
     #
@@ -94,6 +100,7 @@ module Discord
                    @shard : Gateway::ShardKey? = nil,
                    @large_threshold : Int32 = 100,
                    @compress : CompressMode = CompressMode::Stream,
+                   @guild_subscriptions : Bool = true,
                    @zlib_buffer_size : Int32 = 10 * 1024 * 1024,
                    @properties : Gateway::IdentifyProperties = DEFAULT_PROPERTIES,
                    @logger = Logger.new(STDOUT))
@@ -327,7 +334,7 @@ module Discord
       end
 
       compress = @compress.large?
-      packet = Gateway::IdentifyPacket.new(@token, @properties, compress, @large_threshold, shard_tuple)
+      packet = Gateway::IdentifyPacket.new(@token, @properties, compress, @large_threshold, shard_tuple, @guild_subscriptions)
       websocket.send(packet.to_json)
     end
 

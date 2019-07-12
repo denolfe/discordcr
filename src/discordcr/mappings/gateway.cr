@@ -22,9 +22,9 @@ module Discord
     end
 
     struct IdentifyPacket
-      def initialize(token, properties, large_threshold, compress, shard)
+      def initialize(token, properties, large_threshold, compress, shard, guild_subscriptions)
         @op = Discord::Client::OP_IDENTIFY
-        @d = IdentifyPayload.new(token, properties, large_threshold, compress, shard)
+        @d = IdentifyPayload.new(token, properties, large_threshold, compress, shard, guild_subscriptions)
       end
 
       JSON.mapping(
@@ -34,7 +34,7 @@ module Discord
     end
 
     struct IdentifyPayload
-      def initialize(@token, @properties, @compress, @large_threshold, @shard)
+      def initialize(@token, @properties, @compress, @large_threshold, @shard, @guild_subscriptions)
       end
 
       JSON.mapping(
@@ -42,7 +42,8 @@ module Discord
         properties: IdentifyProperties,
         compress: Bool,
         large_threshold: Int32,
-        shard: Tuple(Int32, Int32)?
+        shard: Tuple(Int32, Int32)?,
+        guild_subscriptions: Bool?,
       )
     end
 
