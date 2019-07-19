@@ -26,6 +26,10 @@ describe Discord::Mention do
       into: [Discord::Mention::Channel.new(123_u64, 0, 6)])
 
     it_parses_message(
+      "<#123:456:name>",
+      into: [Discord::Mention::RemoteChannel.new(123_u64, 456_u64, "name", 0, 14)])
+
+    it_parses_message(
       "<:foo:123><a:bar:456>",
       into: [
         Discord::Mention::Emoji.new(false, "foo", 123_u64, 0, 10),

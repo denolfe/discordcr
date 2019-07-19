@@ -5,6 +5,8 @@ module Discord::Mention
 
   record Channel, id : UInt64, start : Int32, size : Int32
 
+  record RemoteChannel, id : UInt64, guild_id : UInt64, name : String, start : Int32, size : Int32
+
   record Emoji, animated : Bool, name : String, id : UInt64, start : Int32, size : Int32
 
   record Everyone, start : Int32 do
@@ -19,7 +21,7 @@ module Discord::Mention
     end
   end
 
-  alias MentionType = User | Role | Channel | Emoji | Everyone | Here
+  alias MentionType = User | Role | Channel | RemoteChannel | Emoji | Everyone | Here
 
   # Returns an array of mentions found in a string
   def self.parse(string : String)
@@ -70,7 +72,17 @@ module Discord::Mention
 
             if peek_next_char.ascii_number?
               snowflake = scan_snowflake(pos)
-              yield Channel.new(snowflake, start, pos - start + 1) if current_char == '>'
+              if current_char == '>'
+                yield Channel.new(snowflake, start, pos - start + 1)
+              elsif current_char == ':' && peek_next_char.ascii_number?
+                next_char
+                guild_id = scan_snowflake(pos)
+                if current_char == ':'
+                  next_char
+                  name = scan_word(pos)
+                  yield RemoteChannel.new(snowflake, guild_id, name, start, pos) if current_char == '>'
+                end
+              end
             end
           when ':', 'a'
             if current_char == 'a'
